@@ -19,11 +19,36 @@ pub mod solana_email_identity {
         Ok(())
     }
 
-    /// For future expansion, A placeholder for sending an email.
+    /// Sends an email with a basic spam prevention deposit.
+    /// The email account PDA is derived from [b"email_account", sender.key()].
+    /// A fixed deposit of lamports is transferred from the sender to the vault.
     pub fn send_email(ctx: Context<SendEmail>) -> Result<()> {
         let email_account = &mut ctx.accounts.email_account;
         email_account.sender = ctx.accounts.sender.key();
-        msg!("Email sent from: {}", email_account.sender);
+        email_account.bump = ctx.bumps.email_account;
+
+        // Set deposit amount (e.g. 0.001 SOL)
+        let deposit_amount: u64 = 1_000_000;
+
+        // Transfer lamports from sender to vault using CPI to system program.
+        let transfer_ix = anchor_lang::solana_program::system_instruction::transfer(
+            &ctx.accounts.sender.key(),
+            &ctx.accounts.vault.key(),
+            deposit_amount,
+        );
+        anchor_lang::solana_program::program:invoke_signed(
+            &transfer_ix,
+            &[
+                ctx.accounts.sender.to_account_info(),
+                ctx.accounts.vault.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+            &[&[b"vault", &[ctx.bumps.vault]]],
+        )
+        .map_err(|_| ErrorCode::TransferFailed)?;
+
+
+        msg!("Email sent from {} with deposit {} lamports", email_account.sender, deposit_amount);
         Ok(())
     }
 }
@@ -41,7 +66,7 @@ pub struct RegisterUser<'info> {
     )]
     pub user_profile: Account<'info, UserProfile>,
 
-    /// The account of the user who is regiestering (must be a signer and payer for the account)
+    /// The wallet of the user (payer and signer).
     #[account(mut)]
     pub owner: Signer<'info>,
 
@@ -65,11 +90,21 @@ pub struct SendEmail<'info> {
     )]
     pub email_account: Account<'info, Email>,
 
+    /// The vault account for spam deposits. It is initialized if needed.
+    #[account(
+        init_if_needed,
+        payer = sender,
+        space = 8 + Vault::SIZE,
+        seeds = [b"vault"],
+        bump
+    )]
+    pub vault: Account<'info, Vault>,
+
     /// The Solana system program.
     pub system_program: Program<'info, System>,
 }
 
-/// The on-chain data structure for a user profile.
+/// The on-chain data structure for a persistent user profile.
 #[account]
 pub struct UserProfile {
     pub owner: Pubkey,
@@ -81,7 +116,7 @@ impl UserProfile {
     pub const SIZE: usize = 32 + 1;
 }
 
-/// The on-chain data structure for an email.
+/// The on-chain data structure for persistent email account.
 #[account]
 pub struct Email {
     pub sender: Pubkey,
@@ -91,4 +126,21 @@ pub struct Email {
 impl Email {
     /// Size of the email account data (excluding the 8-byte discriminator).
     pub const SIZE: usize = 32 +1;
+}
+
+// The vault that holds spam deposits.
+#[account]
+pub struct Vault {
+    pub total_deposits: u64,
+    pub bump: u8,
+}
+
+impl Vault {
+    pub const SIZE: usize = 8 + 1;
+}
+
+#[error_code]
+pub enum ErrorCode {
+    #[msg("Transfer of spam deposit failed.")]
+    TransferFailed,
 }
