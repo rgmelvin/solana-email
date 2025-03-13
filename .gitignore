@@ -1,0 +1,33 @@
+# Node modules and package lock files
+node_modules
+yarn.lock
+package.lock
+
+# Yarn v2+ directory 
+.yarn/
+
+# Rust/Cargo artifacts
+target/
+Cargo.lock
+
+# Backup files (for Rust source Backups, etc.)
+**/*.rs.bk
+
+# Anchor build and deployment artifacts
+.anchor/
+deploy/
+test-ledger
+
+# VSCode settings
+.VSCode
+
+# Logs
+*.Logs
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+
+
+
