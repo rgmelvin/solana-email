@@ -21,15 +21,40 @@ jobs:
           toolchain: stable
           override: true
 
-      # Install the Solana CLI
+      # Cache Cargo dependencies (registry and git)
+      - name: Cache Cargo registry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache Cargo git repositories
+        uses: actions/cache@v3
+        with:
+          path: ~.cargo/git
+          key: ${{ runner.os }}-cargo-git-${{ hashFiles('**/Cargo.lock') }}
+
+      # Install the Solana CLI (check for updates at regular intervals)
       - name: Install Solana CLI
         run: |
           curl -sSfL https://release.solana.com/v1.18.2/install | sh
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
 
-      # Install the Anchor CLI
+      # Install the Anchor CLI (check for updates at regular intervals)
       - name: Install Anchor CLI
         run: cargo install --git https://github.com/coral-xyz/anchor --tag v0.30.1 anchor-cli --locked --force
+
+      # Setup Node and cache Node dependencies
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '23.7.0'
+
+      - name: Cache Node dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.yarn/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       # Install Node dependencies (using Yarn)
       - name: Install Node dependencies
