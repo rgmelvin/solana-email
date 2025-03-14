@@ -10,25 +10,35 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
+      # Checkout the repository
       - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up the Rust toolchain
+      - name: Set up Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
 
+      # Install the Solana CLI
       - name: Install Solana CLI
         run: |
-          sh -c "$curl -sSfL https://release.solana.com/v1.18.2/install)"
+          curl -sSfL https://release.solana.com/v1.18.2/install | sh
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
 
+      # Install the Anchor CLI
       - name: Install Anchor CLI
         run: cargo install --git https://github.com/coral-xyz/anchor --tag v0.30.1 anchor-cli --locked --force
 
+      # Install Node dependencies (using Yarn)
       - name: Install Node dependencies
         run: yarn install
 
+      # Build the Anchor program
       - name: Build the Anchor program
         run: anchor build
 
+      # Run the tests
       - name: Run tests
         run: anchor test

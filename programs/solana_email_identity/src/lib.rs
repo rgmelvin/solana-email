@@ -36,7 +36,7 @@ pub mod solana_email_identity {
             &ctx.accounts.vault.key(),
             deposit_amount,
         );
-        anchor_lang::solana_program::program:invoke_signed(
+        anchor_lang::solana_program::program::invoke_signed(
             &transfer_ix,
             &[
                 ctx.accounts.sender.to_account_info(),
