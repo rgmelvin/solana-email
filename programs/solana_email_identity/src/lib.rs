@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
+use anchor_lang::system_program;
 
-declare_id!("GVJ4ZBAEBQiGnx9efE4CnvC2DiJviQD2qqyBonBEnpBB");
+declare_id!("FCN9dmSwzfY6ygooW1ZeQaSxhc5QqtdBMFg5cnxPe4PC");
 
 /// This program manages user registration for the Solana email identity service.
 #[program]
@@ -31,13 +32,13 @@ pub mod solana_email_identity {
         let deposit_amount: u64 = 1_000_000;
 
         // Transfer lamports from sender to vault using CPI to system program.
-        let transfer_ix = anchor_lang::solana_program::system_instruction::transfer(
+        let ix = anchor_lang::solana_program::system_instruction::transfer(
             &ctx.accounts.sender.key(),
             &ctx.accounts.vault.key(),
             deposit_amount,
         );
         anchor_lang::solana_program::program::invoke_signed(
-            &transfer_ix,
+            &ix,
             &[
                 ctx.accounts.sender.to_account_info(),
                 ctx.accounts.vault.to_account_info(),
@@ -46,8 +47,6 @@ pub mod solana_email_identity {
             &[&[b"vault", &[ctx.bumps.vault]]],
         )
         .map_err(|_| ErrorCode::TransferFailed)?;
-
-
         msg!("Email sent from {} with deposit {} lamports", email_account.sender, deposit_amount);
         Ok(())
     }
@@ -71,6 +70,7 @@ pub struct RegisterUser<'info> {
     pub owner: Signer<'info>,
 
     /// System program for account creation.
+    #[account(address = system_program::ID)]
     pub system_program: Program<'info, System>,
 }
 
@@ -101,6 +101,7 @@ pub struct SendEmail<'info> {
     pub vault: Account<'info, Vault>,
 
     /// The Solana system program.
+    #[account(address = system_program::ID)]
     pub system_program: Program<'info, System>,
 }
 
