@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program;
 
-declare_id!("FCN9dmSwzfY6ygooW1ZeQaSxhc5QqtdBMFg5cnxPe4PC");
+declare_id!("45ddCwDXxos8PPtZf3qJWtFA4FwGhDVjTDrUoqj8v5Do");
 
 /// This program manages user registration for the Solana email identity service.
 #[program]
@@ -9,12 +9,9 @@ pub mod solana_email_identity {
     use super::*;
 
     /// Registers a new user by createing a PDA-based user profile.
-    /// The profile is derived from the seed: ["user_profile", owner.key()] and stores
-    /// the owner's public key and the bump
     pub fn register_user(ctx: Context<RegisterUser>) -> Result<()> {
         let user_profile = &mut ctx.accounts.user_profile;
         user_profile.owner = ctx.accounts.owner.key();
-        // Retrieve the bump that Anchor calculated during account validation.
         user_profile.bump = ctx.bumps.user_profile;
         // initialize display_name to empty
         user_profile.display_name = "".to_string();
@@ -32,9 +29,14 @@ pub mod solana_email_identity {
         Ok(())
     }
 
+    /// Closes the user profile (unregisters the user) and transfers the remaining lamports to the owner.
+    pub fn unregister_user(ctx: Context<UnregisterUser>) -> Result <()> {
+        // The 'close' attribute on the account in the context automatically transfers the lamports.
+        msg!("User unregisterd: {}", ctx.accounts.user_profile.owner);
+        Ok(())
+    }
+
     /// Sends an email with a basic spam prevention deposit.
-    /// The email account PDA is derived from [b"email_account", sender.key()].
-    /// A fixed deposit of lamports is transferred from the sender to the vault.
     pub fn send_email(ctx: Context<SendEmail>) -> Result<()> {
         let email_account = &mut ctx.accounts.email_account;
         email_account.sender = ctx.accounts.sender.key();
@@ -102,6 +104,25 @@ pub struct UpdateUser<'info> {
 }
 
 #[derive(Accounts)]
+pub struct UnregisterUser<'info> {
+    /// The user profile PDA to be closed.
+    /// The `close = owner` attribute means that upon closing,
+    /// the account's lamports will be transferred to the owner.
+    #[account(
+        mut,
+        close = owner,
+        seeds = [b"user_profile", owner.key().as_ref()],
+        bump = user_profile.bump,
+        has_one = owner
+    )]
+    pub user_profile: Account<'info, UserProfile>,
+
+    /// The user who is unregistering.
+    #[account (mut)]
+    pub owner: Signer<'info>,
+}
+
+#[derive(Accounts)]
 pub struct SendEmail<'info> {
     /// The sender of the email.
     #[account(mut)]
@@ -141,8 +162,7 @@ pub struct UserProfile {
 }
 
 impl UserProfile {
-    /// Size of the user profile data (excluding the 8-byte discriminator).
-    /// 32 for Pubkey, 1 for bump, 4 for string length, 32 for content
+    /// 32 bytes for Pubkey, 1 byte for bump, 4 bytes for string length, 32 bytes for the display_name.
     pub const SIZE: usize = 32 + 1 + 4 + 32;
 }
 
