@@ -16,7 +16,19 @@ pub mod solana_email_identity {
         user_profile.owner = ctx.accounts.owner.key();
         // Retrieve the bump that Anchor calculated during account validation.
         user_profile.bump = ctx.bumps.user_profile;
+        // initialize display_name to empty
+        user_profile.display_name = "".to_string();
         msg!("User registered: {}", user_profile.owner);
+        Ok(())
+    }
+
+    /// Updates the user's profile with a new display name.
+    pub fn update_user(ctx: Context<UpdateUser>, new_display_name: String) -> Result<()> {
+        let user_profile = &mut ctx.accounts.user_profile;
+        // Ensure that only the account owner can update their profile.
+        require!(user_profile.owner == ctx.accounts.owner.key(), ErrorCode::Unauthorized);
+        user_profile.display_name = new_display_name;
+        msg!("User updated: {}", user_profile.owner);
         Ok(())
     }
 
@@ -75,6 +87,21 @@ pub struct RegisterUser<'info> {
 }
 
 #[derive(Accounts)]
+pub struct UpdateUser<'info> {
+    /// the user profile PDA to be updated.
+    #[account(
+        mut,
+        seeds = [b"user_profile", owner.key().as_ref()],
+        bump = user_profile.bump,
+        has_one = owner // Ensures the profile's owner matches the signer.
+    )]
+    pub user_profile: Account<'info, UserProfile>,
+
+    /// the user who is updating the profile.
+    pub owner: Signer<'info>,
+}
+
+#[derive(Accounts)]
 pub struct SendEmail<'info> {
     /// The sender of the email.
     #[account(mut)]
@@ -110,11 +137,13 @@ pub struct SendEmail<'info> {
 pub struct UserProfile {
     pub owner: Pubkey,
     pub bump: u8,
+    pub display_name: String,
 }
 
 impl UserProfile {
     /// Size of the user profile data (excluding the 8-byte discriminator).
-    pub const SIZE: usize = 32 + 1;
+    /// 32 for Pubkey, 1 for bump, 4 for string length, 32 for content
+    pub const SIZE: usize = 32 + 1 + 4 + 32;
 }
 
 /// The on-chain data structure for persistent email account.
@@ -144,4 +173,6 @@ impl Vault {
 pub enum ErrorCode {
     #[msg("Transfer of spam deposit failed.")]
     TransferFailed,
+    #[msg("Unauthorized: Only the account owner can perform this action.")]
+    Unauthorized,
 }
