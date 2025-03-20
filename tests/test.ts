@@ -388,4 +388,44 @@ describe("solana_email_identity", () => {
         console.log("End-to-end: user profile successfully closed");
     }
   });
+
+  // Test 10: Account Closure Edge Case - Unauthorized Closure
+  it("Fails to close a user profile with an unauthorized signer", async () => {
+    const user = Keypair.generate();
+    const unauthorized = Keypair.generate();
+    await airdropKeypair(user);
+    await airdropKeypair(unauthorized);
+
+    const [userProfilePda] = anchor.web3.PublicKey.findProgramAddressSync(
+        [Buffer.from("user_profile"), user.publicKey.toBuffer()],
+        program.programId
+    );
+
+    // Register the user.
+    await program.methods
+        .registerUser()
+        .accounts({
+            userProfile: userProfilePda,
+            owner: user.publicKey,
+            systemProgram: anchor.web3.SystemProgram.programId,
+        } as RegisterUserAccounts)
+        .signers([user])
+        .rpc();
+
+    // Attempt to unregister using unauthorized signer.
+    try {
+        await program.methods
+            .unregisterUser()
+            .accounts({
+                userProfile: userProfilePda,
+                owner: unauthorized.publicKey,
+            })
+            .signers([unauthorized])
+            .rpc();
+        assert.fail("Unauthorized account closure should have failed");
+    } catch (err: any) {
+        console.log("Unauthorized closure error:", err.toString());
+        assert.include(err.toString(), "A seeds constraint was violated.", "Expected unauthorized closure error");
+    }
+  });
 });
