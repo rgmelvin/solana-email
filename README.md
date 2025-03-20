@@ -209,7 +209,11 @@ The Solana Email Identity Service is a decentralized protocol built on Solana us
    yarn test
 
 ### Usage
-Interact with the program using the Anchor TypeScript client. For example, to register a new user:
+You can interact with the deployed program using the Anchor TypeScript client. Below are examples for each of the main instructions.
+
+### Register a New User
+
+This example creates a new user profile. The PDA (Program Derived Address) for the user profile derived from the seed "user_profile" and the owner's public key.
 
    ```ts
    const provider = anchor.AnchorProvider.local();
@@ -228,7 +232,62 @@ Interact with the program using the Anchor TypeScript client. For example, to re
       systemProgram: anchor.web3.SystemProgram.programId,
    }).rpc();
    ```
-Your front-end or API client would similarly use the generated IDL to interact with these instructions.
+
+### Update User Profile
+
+To update a user's profile (for example, to change the display name), call the updateUser instruction with the new display name. Note that only the owner (registered user) is authorized to perform this update.
+
+```ts
+const newDisplayName = "Alice";
+
+// Assuming you have already registered the user and derived the PDA:
+await program.methods.updateUser(newDisplayName)
+    .accounts({
+        userProfile: userProfilePDA,
+        owner: user,
+    })
+    .rpc();
+```
+
+### Unregister User
+
+This instruction closes the user profile account and transfers any remaining lamports to the owner's wallet. The ```close``` attribute in the account context ensures that the funds are returned.
+
+```ts
+await program.methods.unregisterUser()
+    .accounts({
+        userProfile: userProfilePDA,
+        owner: user,
+    })
+    .rpc();
+```
+
+### Send Email with Spam Prevention Deposit
+
+When sending an email, the program creates an on-chain record (email account) and transfers a small deposit (to deter spam) from the sender to a vault. The email account PDA is derived from the seed ```"email_account"``` and the sender's public key. The vault PDA is derived from a fixed seed (e.g., ```"vault"```).
+
+```ts
+const sender = provider.wallet.publicKey;
+const [emailAccountPda] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("email_account"), sender.toBuffer()],
+    program.programId
+);
+const [vaultPDA] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("vault")],
+    program.programId
+);
+
+await program.methods.sendEmail()
+    .accounts({
+        sender: sender,
+        emailAccount: emailAccountPda,
+        vault: vaultPda,
+        systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .rpc();
+```
+
+Each of these code snippets assumes that you have built, deployed, and correctly configured the program on your local validator (or target network). Adjust the code as necessary for your environment and further integration with your UI or API.
 
 ### Testing
 My test suite covers the following scenarios:
