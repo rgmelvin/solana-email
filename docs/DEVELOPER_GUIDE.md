@@ -12,6 +12,10 @@ This document provides an in-depth look at the **Solana Email Identity Service**
 
     - [Technology Stack](#Technology-Stack)
 
+- [API Reference](#API-Reference)
+
+    - [registerUser](#register-user)
+
 ## Architecture
 
 ### Overview
@@ -19,3 +23,5 @@ This document provides an in-depth look at the **Solana Email Identity Service**
 ### Diagrams
 
 ### Technolgy Stack
+
+## API Reference
