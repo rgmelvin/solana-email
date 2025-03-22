@@ -9,4 +9,4 @@ This document provides an in-depth look at the **Solana Email Identity Service**
 
 ## Architecture
 
-###Overview
+### Overview
