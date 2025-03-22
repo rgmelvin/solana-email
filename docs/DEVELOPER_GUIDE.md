@@ -11,6 +11,7 @@ This document provides an in-depth look at the **Solana Email Identity Service**
     - [Diagrams](#Diagrams)
 
     - [Technology Stack](#Technology-Stack)
+---
 
 - [API Reference](#API-Reference)
 
