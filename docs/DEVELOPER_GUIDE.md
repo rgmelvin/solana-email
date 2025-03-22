@@ -58,9 +58,12 @@ Key components include:
 
 - **Program Derived Addresses (PDAs)**:
     Deterministic addresses derived for:
-        - **User Profile:** `[b"user_profile", owner.key()]`
-        - **Email Account:** `[b"email_account", sender.key()]`
-        - **Vault:** `[b"vault"]`
+
+    - **User Profile:** `[b"user_profile", owner.key()]`
+
+    - **Email Account:** `[b"email_account", sender.key()]`
+
+    - **Vault:** `[b"vault"]`
 
 - **Client Integration:**
     A TypeScript client interacts with the on-chain program to create transactions for registering users, updataing profiles, sending emails, etc.
