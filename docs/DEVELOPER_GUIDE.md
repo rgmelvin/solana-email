@@ -54,9 +54,11 @@ The **Solana Email Identity Service** is a decentralized protocol built on the S
 Key components include:
 
 - **On-Chain Program**:
+
     Written in Rust using Anchor. The program implements instructions for user registration, profile updates, unregistration, and sending emails.
 
 - **Program Derived Addresses (PDAs)**:
+
     Deterministic addresses derived for:
 
     - **User Profile:** `[b"user_profile", owner.key()]`
@@ -66,6 +68,7 @@ Key components include:
     - **Vault:** `[b"vault"]`
 
 - **Client Integration:**
+
     A TypeScript client interacts with the on-chain program to create transactions for registering users, updataing profiles, sending emails, etc.
 
 ### Diagrams
