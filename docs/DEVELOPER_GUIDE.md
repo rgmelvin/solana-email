@@ -73,6 +73,9 @@ Key components include:
 
 ### Diagrams
 
+- **Component Interaction Diagram:
+![Solana Email Identity Service Component Interactions](component_interaction_diagram.png)
+
 ### Technolgy Stack
 ---
 
