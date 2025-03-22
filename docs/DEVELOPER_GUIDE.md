@@ -14,7 +14,15 @@ This document provides an in-depth look at the **Solana Email Identity Service**
 
 - [API Reference](#API-Reference)
 
-    - [registerUser](#register-user)
+    - [registerUser](#registerUser)
+
+    - [updateUser](#updateUser)
+
+    - [unregisterUser](#unregisterUser)
+
+    - [sendEmail](#sendEmail)
+
+- [Testing Guidelines](#Testing-Guidelines)
 
 ## Architecture
 
@@ -25,3 +33,13 @@ This document provides an in-depth look at the **Solana Email Identity Service**
 ### Technolgy Stack
 
 ## API Reference
+
+### registerUser
+
+### updateUser
+
+### unregisterUser
+
+### sendEmail
+
+## Testing Guidelines
