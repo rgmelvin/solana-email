@@ -74,6 +74,7 @@ Key components include:
 ### Diagrams
 
 - **Component Interaction Diagram**:
+
 ![Diagram_1](component_interaction_diagram.png)
 
 ### Technolgy Stack
