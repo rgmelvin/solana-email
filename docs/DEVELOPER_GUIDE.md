@@ -5,8 +5,17 @@ This document provides an in-depth look at the **Solana Email Identity Service**
 ## Table of Contents
 
 - [Architecture](#Architecture)
+
     - [Overview](#Overview)
+
+    - [Diagrams](#Diagrams)
+
+    - [Technology Stack](#Technology Stack)
 
 ## Architecture
 
 ### Overview
+
+### Diagrams
+
+### Technolgy Stack
