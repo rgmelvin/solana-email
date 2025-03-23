@@ -121,11 +121,63 @@ Key components include:
 - **Description**: 
     Updates a user's profile with a new display name (and, in future, additional fields).
 
+- **Accounts**:
 
+    - `userProfile`: Mutable PDA (derived from `[b"user_profile", owner.key()]` ).
 
-### unregisterUser
+    - `owner`: The signer (must match `userProfile.owner`).
 
-### sendEmail
+- **Arguments**:
+
+    - `new_display_name: String`
+
+- **Custom Errors**:
+
+    - `Unauthorized`: If the signer is not the owner.
+
+    - Optionally, `InputLengthExceeded` if the new display name is too long.
+
+### `unregisterUser`
+
+- **Description**:
+    Closes the user profile (unregisters the user) and transfers remaining lamports to the owner.
+
+- **Accounts**:
+
+    - `userProfile`: Mutable PDA with the `close = owner` attribute.
+
+    - `owner`: The signer.
+
+- **Arguments**:
+
+    None.
+
+- **Custom Errors**:
+
+    - `Unauthorized`: If the signer does not match the owner.
+
+### `sendEmail`
+
+- **Description**:
+    Sends an email by creating an on-chain email account record and transferring a spam prevention deposit into a vault.
+
+- **Accounts**:
+
+    - `sender`: The signer.
+
+    - `emailAccount`: PDA derived from `[b"email_account", sender.key()]`.
+
+    - `vault`: PDA for spam deposit (inialized if needed).
+
+    - `systemProgram`: The Solana System Program.
+
+- **Arguments**:
+
+    None.
+
+- **Custom Errors**:
+
+    `TransferFailed`: If the lamport transfer fails (e.g., insufficient funds).
 ---
 
 ## Testing Guidelines
