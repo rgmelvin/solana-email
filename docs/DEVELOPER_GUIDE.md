@@ -14,13 +14,13 @@ This document provides an in-depth look at the **Solana Email Identity Service**
 
 - [API Reference](#API-Reference)
 
-    - [registerUser](#registerUser)
+    - [`registerUser`](#registerUser)
 
-    - [updateUser](#updateUser)
+    - [`updateUser`](#updateUser)
 
-    - [unregisterUser](#unregisterUser)
+    - [`unregisterUser`](#unregisterUser)
 
-    - [sendEmail](#sendEmail)
+    - [`sendEmail`](#sendEmail)
 
 - [Testing Guidelines](#Testing-Guidelines)
 
@@ -97,7 +97,7 @@ Key components include:
 
 ### `registerUser`
 
-- **Description**:
+- **Description**: 
     Registers a new user by creating a PDA-based user profile.
 
 - **Accounts**:
@@ -118,7 +118,7 @@ Key components include:
 
 ### `updateUser`
 
-- **Description**:
+- **Description**: 
     Updates a user's profile with a new display name (and, in future, additional fields).
 
 
