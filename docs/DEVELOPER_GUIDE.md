@@ -80,8 +80,17 @@ Key components include:
 - **Data Flow Diagram**:
 
     ![Diagram_2](data_flow_diagram.png)
+---
 
 ### Technolgy Stack
+
+- **Rust & Anchor**: For the on-chain program.
+
+- **Solana CLI**: For deploying and interacting with the bockchain.
+
+- **TypeScript & Node.js**: For client integration and testing.
+
+- **GitHub Actions**: For CI/CD pipeline automation.
 ---
 
 ## API Reference
@@ -131,3 +140,5 @@ Key components include:
 **Remote Procedure Call (RPC)**: A protocol that allows a client to request a service or data from a server, which is typically a node in the Solana network.
 
 **Cross-Program Invocation (CPI)**: A mechanism that allows one Solana program to call another program, similar to how function calls work in traditional programming but CPIs opperate at the level of smart contracts within the Solana blockchain.
+
+**Continuous Integration and Continuous Delivery/Deployment**: A set of practices in software engineering aimed at streamlining and accelerating the software development lifecycle. **Continuous Integration (CI)** is a practice where developers frequently merge their code changes into a central code repository (GitHub). **Contiuous Delivery (CD)** extends the CI process by ensuring that the software can be released to production at any time by automating building, testing, and packaging. **Continuous Deployment (CD)** is an advanced form of CD where every change that passes the automated testing is automatically deployed to production.
