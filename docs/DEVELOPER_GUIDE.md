@@ -95,11 +95,35 @@ Key components include:
 
 ## API Reference
 
-<span style="font-size: 150%;">`registerUser`</span>
-
 ### `registerUser`
 
-### updateUser
+- **Description**:
+
+Registers a new user by creating a PDA-based user profile.
+
+- **Accounts**:
+
+    - `userProfile`: PDA derived from `[b"user_profile", owner.key()]`.
+
+    - `owner`: The signer and payer.
+
+    - `systemProgram`: The Solana System Program
+
+- **Arguments**:
+
+    None (defaults are set in the instruction).
+
+- **Custom Errors**:
+
+    - `UserAlreadyRegistered` (fi manually implemented).
+
+### `updateUser`
+
+- **Description**:
+
+Updates a user's profile with a new display name (and, in future, additional fields).
+
+
 
 ### unregisterUser
 
@@ -144,3 +168,5 @@ Key components include:
 **Cross-Program Invocation (CPI)**: A mechanism that allows one Solana program to call another program, similar to how function calls work in traditional programming but CPIs opperate at the level of smart contracts within the Solana blockchain.
 
 **Continuous Integration and Continuous Delivery/Deployment (CI/CD)**: A set of practices in software engineering aimed at streamlining and accelerating the software development lifecycle. **Continuous Integration (CI)** is a practice where developers frequently merge their code changes into a central code repository (GitHub). **Contiuous Delivery (CD)** extends the CI process by ensuring that the software can be released to production at any time by automating building, testing, and packaging. **Continuous Deployment (CD)** is an advanced form of CD where every change that passes the automated testing is automatically deployed to production.
+
+**Solana System Program**: a native program that is crucial for operation of the Solana network. The System program acts as a foundational utility that enables the creation and management of accounts, as well as the transfer of funds and data on the Solana blockchain.
