@@ -75,7 +75,7 @@ Key components include:
 
 - **Component Interaction Diagram**:
 
-![Diagram_1](component_interaction_diagram.png)
+    ![Diagram_1](component_interaction_diagram.png)
 
 ### Technolgy Stack
 ---
@@ -117,3 +117,13 @@ Key components include:
 
 ## Conclusion
 ---
+
+## Glossary of Terms
+
+**Client**: Refers to a piece of software that interacts with the Solana network e.g., a TypeScript listing.
+
+**Program Derived Address (PDA)**: A type of address that is deterministically derived using a combination of user-defined seeds, a bump seed, and a program's ID. PDAs look like a standard public key but do not have corresponding private keys. This means that these addresses fall off of the Ed25519 curve and cannot be signed by an external user.
+
+**Remote Procedure Call (RPC)**: A protocol that allows a client to request a service or data from a server, which is typically a node in the Solana network.
+
+**Cross-Program Invocation (CPI)**: A mechanism that allows one Solana program to call another program, similar to how function calls work in traditional programming but CPIs opperate at the level of smart contracts within the Solana blockchain.
