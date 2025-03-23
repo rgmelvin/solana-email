@@ -77,6 +77,10 @@ Key components include:
 
     ![Diagram_1](component_interaction_diagram.png)
 
+- **Data Flow Diagram**:
+
+    ![Diagram_2](data_flow_diagram.png)
+
 ### Technolgy Stack
 ---
 
