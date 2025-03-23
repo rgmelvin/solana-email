@@ -98,8 +98,7 @@ Key components include:
 ### `registerUser`
 
 - **Description**:
-
-Registers a new user by creating a PDA-based user profile.
+    Registers a new user by creating a PDA-based user profile.
 
 - **Accounts**:
 
@@ -120,8 +119,7 @@ Registers a new user by creating a PDA-based user profile.
 ### `updateUser`
 
 - **Description**:
-
-Updates a user's profile with a new display name (and, in future, additional fields).
+    Updates a user's profile with a new display name (and, in future, additional fields).
 
 
 
