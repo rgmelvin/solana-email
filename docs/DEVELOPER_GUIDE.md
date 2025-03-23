@@ -97,7 +97,7 @@ Key components include:
 
 <span style="font-size: 150%;">`registerUser`</span>
 
-### registerUser
+### `registerUser`
 
 ### updateUser
 
