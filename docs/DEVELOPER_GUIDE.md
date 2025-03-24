@@ -298,7 +298,7 @@ yarn test
     - Document any deviations or assumptions in the security model.
 ---
 
-## CI/CD Integration {#CI/CD-Integration}
+## CI/CD Integration
 ---
 
 ## Future Roadmap
