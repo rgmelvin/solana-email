@@ -71,6 +71,8 @@ Key components include:
 
     A TypeScript client interacts with the on-chain program to create transactions for registering users, updataing profiles, sending emails, etc.
 
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
+
 ### Diagrams
 
 - **Component Interaction Diagram**:
