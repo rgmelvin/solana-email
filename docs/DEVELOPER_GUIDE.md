@@ -34,7 +34,7 @@ This document provides an in-depth look at the **Solana Email Identity Service**
 
     - [Security Model](#Security-Model)
 
-    - [Custom Error Handling](#Custom-Error-Codes)
+    - [Security Auditing](#Security-Auditing)
 
     - [Recommendations](#Recommendations)
 
@@ -82,7 +82,7 @@ Key components include:
     ![Diagram_2](data_flow_diagram.png)
 ---
 
-### Technolgy Stack
+### Technology Stack
 
 - **Rust & Anchor**: For the on-chain program.
 
@@ -298,7 +298,7 @@ yarn test
     - Document any deviations or assumptions in the security model.
 ---
 
-## CI/CD Integration
+## CI/CD Integration {#CI/CD-Integration}
 ---
 
 ## Future Roadmap
