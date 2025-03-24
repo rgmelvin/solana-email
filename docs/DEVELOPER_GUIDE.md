@@ -71,7 +71,6 @@ Key components include:
 
     A TypeScript client interacts with the on-chain program to create transactions for registering users, updataing profiles, sending emails, etc.
 
-<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 
 ### Diagrams
 
@@ -82,6 +81,8 @@ Key components include:
 - **Data Flow Diagram**:
 
     ![Diagram_2](data_flow_diagram.png)
+
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ### Technology Stack
@@ -93,6 +94,8 @@ Key components include:
 - **TypeScript & Node.js**: For client integration and testing.
 
 - **GitHub Actions**: For CI/CD pipeline automation.
+
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## API Reference
@@ -180,6 +183,8 @@ Key components include:
 - **Custom Errors**:
 
     `TransferFailed`: If the lamport transfer fails (e.g., insufficient funds).
+
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## Testing Guidelines
@@ -239,6 +244,8 @@ yarn test
 3. **Review Test Output**:
 
     Verify that tests cover all of the positive and negative scenarios.
+
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## Security Considerations
@@ -293,20 +300,120 @@ yarn test
 
 ### Recommendations
 
-    - Use automated security tools as part of the CI/CD pipeline.
+- Use automated security tools as part of the CI/CD pipeline.
 
-    - Update dependencies regularly and review change logs for security fixes.
+- Update dependencies regularly and review change logs for security fixes.
 
-    - Document any deviations or assumptions in the security model.
+- Document any deviations or assumptions in the security model.
+
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 <a id="ci-cd-integration"></a>
 ## CI/CD Integration
+
+### GitHub Actions Workflow
+
+Your CI/CD pipeline should automate the following:
+
+- **Checkout the Repository**
+
+- **Set Up Toolchains**:
+    
+    Configure Rust, Node.js, and Yarn.
+
+- **Cache Dependencies**:
+
+    Cache Cargo and Yarn caches for faster builds.
+
+- **Install CLI Tools**:
+
+    Install the Solana CLI and Anchor CLI.
+
+- **Build and Deploy**:
+
+    run `anchor clean`, `anchor build`, and `anchor deploy`.
+
+- **Run Tests**:
+
+    Execute the test suite using `yarn test`.
+
+
+Example GitHub Actions workflow file (`.gihub/workflows/ci/yml`):
+```yaml
+name: Anchor CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_requests:
+    branches: [ main ]
+
+jobs:
+  build-and-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install Solana CLI
+        run: |
+          curl -sSfL https://release.solana.com/v1.18.2/jinstall | sh
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+
+      - name: Install Anchor CLI
+        run: cargo install --git https://github.com/coral-xyz/anchor --tag v0.30.1 anchor-cli --locked --force
+
+      - name: Set Up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '23.7.0'
+
+      - name: Cache Node dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.yarn/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install Node dependencies
+        run: yarn install
+
+      - name: Build the Anchor program
+        run: anchor build
+
+      - name: Deploy the Anchor program
+        run: anchor deploy
+
+      - name: Run tests
+        run: yarn test
+```
+
+### Automated Notificaitons
+
+Configure your CI system (e.g., GitHub Actions) to send notifications (via Discord, email, etc.) if builds or tests fail, ensuring prompt attention to issues.
+
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## Future Roadmap
+
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## Conclusion
+
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## Glossary of Terms
@@ -322,3 +429,6 @@ yarn test
 **Continuous Integration and Continuous Delivery/Deployment (CI/CD)**: A set of practices in software engineering aimed at streamlining and accelerating the software development lifecycle. **Continuous Integration (CI)** is a practice where developers frequently merge their code changes into a central code repository (GitHub). **Contiuous Delivery (CD)** extends the CI process by ensuring that the software can be released to production at any time by automating building, testing, and packaging. **Continuous Deployment (CD)** is an advanced form of CD where every change that passes the automated testing is automatically deployed to production.
 
 **Solana System Program**: a native program that is crucial for operation of the Solana network. The System program acts as a foundational utility that enables the creation and management of accounts, as well as the transfer of funds and data on the Solana blockchain.
+
+
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
