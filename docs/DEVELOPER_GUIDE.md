@@ -236,7 +236,7 @@ yarn test
 
 3. **Review Test Output**:
 
-Verify that tests cover all the positive and negative scenarios.
+    Verify that tests cover all the positive and negative scenarios.
 ---
 
 ## Security Considerations
