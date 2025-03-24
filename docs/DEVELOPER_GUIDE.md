@@ -38,7 +38,7 @@ This document provides an in-depth look at the **Solana Email Identity Service**
 
     - [Recommendations](#Recommendations)
 
-- [CI/CD Integration](#CI/CD-Integration)
+- [CI/CD Integration](#CI-CD-Integration)
 
 - [Future Roadmap](#Future-Roadmap)
 
