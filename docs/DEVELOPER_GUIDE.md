@@ -34,7 +34,7 @@ This document provides an in-depth look at the **Solana Email Identity Service**
 
     - [Security Model](#Security-Model)
 
-    - [Custom Error Handling](#Custom-Error-Handling)
+    - [Custom Error Handling](#Custom-Error-Codes)
 
     - [Recommendations](#Recommendations)
 
@@ -236,16 +236,66 @@ yarn test
 
 3. **Review Test Output**:
 
-    Verify that tests cover all the positive and negative scenarios.
+    Verify that tests cover all of the positive and negative scenarios.
 ---
 
 ## Security Considerations
 
 ### Security Model
 
-### Custom Error Handling
+- **Authorization**:
+
+    Use constraints (e.g., `has_one = owner`) to ensure that only authorized users can update or unregister accounts.
+
+- **Custom Error Codes**:
+
+    Define custom error codes using the `#[error_code]` macro. For example:
+
+    ```rust
+    #[error_code]
+    pub enum ErrorCode {
+        #[msg("Transfer of spam deposit failed.")]
+        TransferFailed,
+        #[msg("Unauthorized: Only the account owner can perform this action.")]
+        Unauthorized,
+        #[msg("User is already registered.")]
+        UserAlreadyRegistered,
+    }
+    ```
+
+- **Acount Data Storage**:
+
+    Calculate account sizes precisely to avoid overflows and minimize on-chain storage costs.
+
+- **CPI Safety**:
+
+    When performing CPI calls (like transferring lamports), map errors to custom error codes for clarity.
+
+### Security Auditing
+
+- **Internal Code Reviews**:
+
+    Regularly review code for common pitfalls (authorization checks, PDA derivation, account sizing).
+
+- **Static Analysis**:
+
+    Run `cargo clippy` for Rust and ESLint for TypeScript.
+
+- **External Audit**:
+
+    Engage a third-party auditor before mainnet deployment.
+
+- **Documentation**:
+
+    Maintain a security guide detailing your design decisions and known limitations.
 
 ### Recommendations
+
+    - Use automated security tools as part of the CI/CD pipeline.
+
+    - Update dependencies regularly and review change logs for security fixes.
+
+    - Document any deviations or assumptions in the security model.
 ---
 
 ## CI/CD Integration
