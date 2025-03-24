@@ -408,10 +408,27 @@ Configure your CI system (e.g., GitHub Actions) to send notifications (via Disco
 
 ## Future Roadmap
 
+- **Enhanced Email Functionality**:
+Integrate off-chain storage (e.g., Arweave) for email content.
+
+- **Encryption**:
+Implement end-to-end encryption for secure email communication.
+
+- **Advance Spam Filtering & Token Rewards**:
+Develop token-based incentives and customizable spam filters.
+
+- **UI Integration**:
+Build a web-based interface for composing, sending, and receiving emails.
+
+- **Additional Profile Information**:
+Expand the `UserProfile` struct to include full name, recovery options, and avatar pointers (with off-chain storage as needed).
+
 <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## Conclusion
+
+This documentation outlines the architecture, API, testing, security, and CI/CD practices for the Solana Email Identity Service. Following these guidelines will help ensure that project is built to professional standards, is secure, throughly tested, and easily maintained. As the project evolves, update this document to reflect new features, changes, and improvements. 
 
 <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
