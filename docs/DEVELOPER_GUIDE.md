@@ -184,9 +184,59 @@ Key components include:
 
 ### Test Strategy
 
-### Test Isolation
+- **Happy Path Tests**:
+
+    Ensure that each instruction works as expected (user registration, update, unregistration, email sending, and full user flow).
+
+- **Negative Tests**:
+
+    Cover error cases such as:
+
+    - Unauthorized updates (only the owner should be able to update).
+
+    - Duplicate registration attempts.
+
+    - Insufficient funds for email sending.
+
+    - Input boundary conditions (e.g., excessively long display names).
+
+- **Edge Cases**:
+
+    Test empty or malformed inputs.
+
+### Isolated Tests
+
+- **New Keypairs**:
+
+    Each test generates a new keypair to derive unique PDAs, ensuring tests do not interfere with each other.
+
+- **Airdrop Helper**:
+
+    Use an airdrop helper function to ensure each keypair has sufficient lamports.
+
+- ** Account Closure**:
+
+    Use close instructoins( e.g., `unregister`) to clean up and avoid state conflicts.
 
 ### Running Tests
+
+To run the test suite locally:
+
+1. **Deploy the Program**:
+
+```bash
+anchor clean && anchor build && anchor deploy
+```
+
+2. **Run Tests**:
+
+```bash
+yarn test
+```
+
+3. **Review Test Output**:
+
+Verify that tests cover all the positive and negative scenarios.
 ---
 
 ## Security Considerations
