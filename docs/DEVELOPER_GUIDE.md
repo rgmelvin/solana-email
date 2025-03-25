@@ -1,6 +1,6 @@
 # Developer Documentation
 
-This document provides an in-depth look at the **Solana Email Identity Service** project. It covers the architectural design, API reference, testing guidlines, and security considerations to ensure that my project meets professional quality standards.
+This document provides an in-depth look at the **Solana Email Identity Service** project. It covers the architectural design, API reference, testing guidlines, and security considerations to ensure that this project meets professional quality standards.
 
 ## Table of Contents
 
@@ -366,6 +366,12 @@ jobs:
         with:
           path: ~/.cargo/registry
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache Cargo git repositories
+        uses: actions/cache@v3
+        with:
+          path: ~.cargo/git
+          key: ${{ runner.os }}-cargo-git-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Install Solana CLI
         run: |
