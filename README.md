@@ -180,4 +180,23 @@ Future enhancements include:
 Contributions to and discussions of my project are welcome. I am a learner developer with aspiratons of producing a professional quality project. I am appreciative of helpful criticism and/ or just plain old help! Please contact me at rgmelvinphd@gmail.com to discuss.
 
 ### License
-This project is licensed under the MIT License.
+
+This project is licensed under the Apache License 2.0. see the [LICENSE](LICENSE) file.
+
+### Citation
+
+If you use this software in your research or projects, please cite it as follows:
+
+> **Solana Email Identity Service**
+> Richard G. Melvin, 2025.
+> Available at: https://github.com/rgmelvin/solana-email
+>
+> BibTeX:
+>```bibtex
+>@misc{solana_email_identity,
+>  author = {Richard G. Melvin},
+>  title = {Solana Email Identity Service},
+>  year = {2025}
+>  note = {Available at https://github.com/rgmelvin/solana-email}
+>}
+>```
