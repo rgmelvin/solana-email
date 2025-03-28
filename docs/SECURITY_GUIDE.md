@@ -45,6 +45,7 @@ This guide details the security practices and processes for the Solana Email Ide
   - **Cross Program Invocations (CPIs)**:
     When calling external programs (for example, for lamport transfers using the System Program), we map low-level errors to our custom error codes. This not only improves clarity but also ensuress that any failure is handled securely.
 
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## Static Analysis and Linting
@@ -94,6 +95,7 @@ This guide details the security practices and processes for the Solana Email Ide
 **Documentation Note**:
 ESLint configuration and command are also listed in the **Developer Guide**.
 
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## Dependency Management
@@ -107,6 +109,7 @@ ESLint configuration and command are also listed in the **Developer Guide**.
 - **Overriding Dependencies (if needed)**:
     If a transitive dependency (e.g., `bytemuck_derive`) requires a newer rustc than our BPF toolchain provides, consider using a `[patch.crates-io]` section in `Cargo.toml` to pin a compatible version.
 
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## Error Handling and Custom Errors
@@ -144,6 +147,7 @@ pub enum ErrorCode {
     **Documentation Note**:
     Each custom error is documented in the **API Reference** section of the **Developer Guide** along with the context in which it is used.
 
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## Best Practices and Recommendations
@@ -159,6 +163,7 @@ pub enum ErrorCode {
 - **Testing Negative Casses**:
     Ensure that tests cover unauthorized actions, duplicate registrations, and boundary conditions.
 
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## CI/CD Integration for Security
@@ -172,6 +177,7 @@ The CI/CD pipeline automatically runs the build, lint, and test suites on every 
 **Documentation Note**:
  The CI/CD configuration (e.g., `.github/workflows/ci.yml`) is included in the repository and the purpose of each step is documented in the **Developer Guide**.
 
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## External Audits and Ongoing Reviews
@@ -181,9 +187,12 @@ The CI/CD pipeline automatically runs the build, lint, and test suites on every 
 - **Ongoing Reviews**:
     Periodic, scheduled, security reviews are to be implemented to ensure that new code changes do not introduce vulnerabilities. Any changes or security updates are documented in a dedicated change log.
 
+<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## Conclusion
     This **Security Guide** outlines the approach to ensuring that the **Solana Email Identity Service** is secure, maintainable, and built to professional standards. By following the practices described above - ranging from static analysis and dependency management to CI/CD integration and external audits - we strive to create a secure system.
 
     For questions or further updates, please refer to this guide or contact Rich (rgmelvinphd@gmail.com)
+
+    <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
