@@ -38,7 +38,7 @@ jobs:
       # Install the Solana CLI (check for updates at regular intervals)
       - name: Install Solana CLI
         run: |
-          sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)""
+          sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
 
       # Install the Anchor CLI (check for updates at regular intervals)
