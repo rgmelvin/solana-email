@@ -43,7 +43,7 @@ jobs:
 
       # Install the Anchor CLI (check for updates at regular intervals)
       - name: Install Anchor CLI
-        run: cargo install --git https://github.com/coral-xyz/anchor --tag v0.31.1 anchor-cli --locked --force
+        run: cargo install --git https://github.com/coral-xyz/anchor --tag v0.31.0 anchor-cli --locked --force
 
       # Setup Node.js
       - name: Setup Node
