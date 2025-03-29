@@ -63,6 +63,9 @@ jobs:
       - name: Install Node dependencies
         run: yarn install
 
+      - name: Add node_modules/.bin to PATH
+        run: echo "$(pwd)/node_modules/.bin" >> $GITHUB_PATH
+
       # Set the SBF_RUSTC environment variable.
       - name: Set SBF_RUSTC environment variable
         run: echo "SBF_RUSTC=$(which rustc)" >> $GITHUB_ENV
