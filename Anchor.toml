@@ -16,7 +16,7 @@ cluster = "http://127.0.0.1:8899"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = "mocha --config tests/mocha.opts tests/**/*.ts --timeout 10000"
+test = "mocha"
 
 [build]
 sbf-flags = ["--no-separate-code"]
