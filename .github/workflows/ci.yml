@@ -37,6 +37,14 @@ jobs:
           sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
 
+      # Generate a Solana wallet keypair if one doesn't exist
+      - name: Generate Solana Keypair
+        run: |
+          mkdir -p ~/.config/solana
+          if [ ! -f ~/.config/solana/id.json ]; then
+            solana-keygen new --no-bip39-passphrase -o ~/.config/solana/id.json
+          fi
+
       # Install the Anchor CLI (adjust version if needed).
       - name: Install Anchor CLI
         run: cargo install --git https://github.com/coral-xyz/anchor --tag v0.31.0 anchor-cli --locked --force
