@@ -71,8 +71,8 @@ jobs:
         run: anchor build
 
       # Generate IDL Types if missing.
-      - name: Generate IDL Types
-        run: anchor client-gen target/idl/solana_email_identity.json --out-file target/types/solana_email_identity.ts
+      - name: Generate IDL Types using idl-to-ts
+        run: npx idl-to-ts target/idl/solana_email_identity.json > target/types/solana_email_identity.ts
 
       # Deploy the Anchor program.
       - name: Deploy the Anchor program
