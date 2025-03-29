@@ -7,8 +7,8 @@
   },
   "dependencies": {
     "@coral-xyz/anchor": "0.31.0",
-    "@project-serum/anchor": "^0.26.0",
-    "idl-to-ts": "^0.6.0"
+    "@project-serum/anchor": "^0.26.0"
+
   },
   "devDependencies": {
     "@types/bn.js": "^5.1.0",
@@ -20,6 +20,8 @@
     "prettier": "^2.6.2",
     "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "idl-to-ts": "github:coral-xyz/anchor#v0.31.0:idl/idl-to-ts"
   }
+
 }
