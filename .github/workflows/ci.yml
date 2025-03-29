@@ -10,74 +10,60 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Set up the Rust toolchain
       - name: Set up Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
 
-      # Cache Cargo registry
       - name: Cache Cargo registry
         uses: actions/cache@v3
         with:
           path: ~/.cargo/registry
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      # Cache Cargo git repositories
       - name: Cache Cargo git repositories
         uses: actions/cache@v3
         with:
-          path: ~.cargo/git
+          path: ~/.cargo/git
           key: ${{ runner.os }}-cargo-git-${{ hashFiles('**/Cargo.lock') }}
 
-      # Install the Solana CLI (check for updates at regular intervals)
+      # Install the Solana CLI using the command from Solana docs.
       - name: Install Solana CLI
         run: |
           sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
 
-      # Install the Anchor CLI (check for updates at regular intervals)
+      # Install the Anchor CLI (adjust version if needed).
       - name: Install Anchor CLI
         run: cargo install --git https://github.com/coral-xyz/anchor --tag v0.31.0 anchor-cli --locked --force
 
-      # Setup Node.js
-      - name: Setup Node
+      - name: Set up Node
         uses: actions/setup-node@v3
         with:
           node-version: '23.7.0'
 
-      # Cache Node dependencies.
       - name: Cache Node dependencies
         uses: actions/cache@v3
         with:
           path: ~/.yarn/cache
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
-      # Install Node dependencies (using Yarn)
       - name: Install Node dependencies
         run: yarn install
 
-      # Set the SBF_RUSTC environment variable so that the BPF build uses the correct rustc.
+      # Set the SBF_RUSTC environment variable.
       - name: Set SBF_RUSTC environment variable
         run: echo "SBF_RUSTC=$(which rustc)" >> $GITHUB_ENV
 
-      # Build the Anchor program
       - name: Build the Anchor program
         run: anchor build
 
-      # Generate IDL Types if missing.
-      - name: Generate IDL Types using idl-to-ts
-        run: npx idl-to-ts target/idl/solana_email_identity.json > target/types/solana_email_identity.ts
-
-      # Deploy the Anchor program.
       - name: Deploy the Anchor program
         run: anchor deploy
 
-      # Run the tests
       - name: Run tests
         run: anchor test
