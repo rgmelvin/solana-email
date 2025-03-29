@@ -64,7 +64,7 @@ jobs:
 
       # Set the SBF_RUSTC environment variable so that the BPF build uses the correct rustc.
       - name: Set SBF_RUSTC environment variable
-        run: echo "SBF_RUSTC=$(which rustc)" >> $GItHUB_ENV
+        run: echo "SBF_RUSTC=$(which rustc)" >> $GITHUB_ENV
 
       # Build the Anchor program
       - name: Build the Anchor program
