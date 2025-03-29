@@ -37,13 +37,23 @@ jobs:
           sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
 
-      # Generate a Solana wallet keypair if one doesn't exist
-      - name: Generate Solana Keypair
+      # Set up a fixed deployment wallet using a secret.
+      - name: Set up Anchor Wallet from Secret
         run: |
           mkdir -p ~/.config/solana
-          if [ ! -f ~/.config/solana/id.json ]; then
-            solana-keygen new --no-bip39-passphrase -o ~/.config/solana/id.json
-          fi
+          echo "$DEPLOY_KEYPAIR" > ~/.config/solana/id.json
+          echo "ANCHOR_WALLET=~/.config/solana/id.json" >> $GITHUB_ENV
+        env:
+          DEPLOY_KEYPAIR: ${{ secrets.DEPLOY_KEYPAIR }}
+
+
+      # Generate a Solana wallet keypair if one doesn't exist
+      #- name: Generate Solana Keypair
+      #  run: |
+      #  mkdir -p ~/.config/solana
+      #   if [ ! -f ~/.config/solana/id.json ]; then
+      #     solana-keygen new --no-bip39-passphrase -o ~/.config/solana/id.json
+      #   fi
 
       # Install the Anchor CLI (adjust version if needed).
       - name: Install Anchor CLI
