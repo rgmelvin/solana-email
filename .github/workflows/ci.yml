@@ -46,6 +46,10 @@ jobs:
         env:
           DEPLOY_KEYPAIR: ${{ secrets.DEPLOY_KEYPAIR }}
 
+      # Confirm the Fixed Keypair
+      - name: Debug Fixed Keypair
+        run: solana-keygen pubkey ~/.config/solana/id.json
+
 
       # Generate a Solana wallet keypair if one doesn't exist
       #- name: Generate Solana Keypair
