@@ -6,7 +6,7 @@ skip-lint = false
 solana = []
 
 [programs.localnet]
-solana_email_identity = "45ddCwDXxos8PPtZf3qJWtFA4FwGhDVjTDrUoqj8v5Do"
+solana_email_identity = "2RheqZFzSkEabsVcxg7zLJ8wqwadwyUvcYhi1gK2H28j"
 
 [registry]
 url = "https://api.apr.dev"
