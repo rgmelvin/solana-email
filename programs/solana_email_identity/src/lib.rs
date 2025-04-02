@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program;
 
-declare_id!("2RheqZFzSkEabsVcxg7zLJ8wqwadwyUvcYhi1gK2H28j");
+declare_id!("Cu7rFcADfVuie5pCTLVFshpAHn862iYqsWsGuFuijYT1");
 
 /// This program manages user registration for the Solana email identity service.
 #[program]
