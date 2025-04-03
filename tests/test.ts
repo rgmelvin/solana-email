@@ -127,7 +127,7 @@ describe("solana_email_identity", () => {
     try {
       await program.account.userProfile.fetch(userProfilePda);
       assert.fail("User profile should have been closed");
-    } catch (err) {
+    } catch {
       console.log("User profile successfully closed");
     }
   });
@@ -196,10 +196,11 @@ describe("solana_email_identity", () => {
         .signers([unauthorizedUser])
         .rpc();
       assert.fail("Unauthorized update should have failed");
-    } catch (err: any) {
-      console.log("Unauthorized update error:", err.toString());
+    } catch (err: unknown) {
+      const errorStr = err instanceof Error ? err.toString() : String(err);
+      console.log("Unauthorized update error:", errorStr);
       // Check that the error string includes "2006" (ConstraintSeeds error).
-      assert.include(err.toString(), "2006", "Expected error code 2006 for unauthorized update");
+      assert.include(errorStr, "2006", "Expected error code 2006 for unauthorized update");
     }
   });
 
@@ -236,9 +237,10 @@ describe("solana_email_identity", () => {
         .signers([user])
         .rpc();
       assert.fail("Duplicate registration should have failed");
-    } catch (err: any) {
-      console.log("Duplicate registration error:", err.toString());
-      assert.include(err.toString(), "already in use", "Expected duplicate registration error message to include 'already in use'");
+    } catch (err: unknown) {
+      const errorStr = err instanceof Error ? err.toString() : String(err);
+      console.log("Duplicate registration error:", errorStr);
+      assert.include(errorStr, "already in use", "Expected duplicate registration error message to include 'already in use'");
     }
   });
 
@@ -268,10 +270,11 @@ describe("solana_email_identity", () => {
             .signers([poorSender])
             .rpc();
         assert.fail("Send email should have failed due to insufficient funds");
-    } catch (err: any) {
-        console.log("Insufficient deposit error:", err.toString());
+    } catch (err: unknown) {
+      const errorStr = err instanceof Error ? err.toString() : String(err);
+        console.log("Insufficient deposit error:", errorStr);
         // Check that the error message includes "insufficient lamports".
-        assert.include(err.toString(), "insufficient lamports", "Expected error due to insufficient funds");
+        assert.include(errorStr, "insufficient lamports", "Expected error due to insufficient funds");
     }
   });
 
@@ -308,9 +311,10 @@ describe("solana_email_identity", () => {
             .signers([user])
             .rpc();
         assert.fail("Update with too long display name should have failed");
-    } catch (err: any) {
-        console.log("Long display name error:", err.toString());
-        assert.include(err.toString(), "Failed to serialize the account.", "Expected error due to input length exceeding limit");
+    } catch (err: unknown) {
+        const errorStr = err instanceof Error ? err.toString() : String(err);
+        console.log("Long display name error:", errorStr);
+        assert.include(errorStr, "Failed to serialize the account.", "Expected error due to input length exceeding limit");
     }
   });
 
@@ -384,8 +388,8 @@ describe("solana_email_identity", () => {
     try {
         await program.account.userProfile.fetch(userProfilePda);
         assert.fail("User profile should have been closed");
-    } catch (err) {
-        console.log("End-to-end: user profile successfully closed");
+    } catch {
+      console.log("End-to-end: user profile successfully closed");
     }
   });
 
@@ -423,9 +427,10 @@ describe("solana_email_identity", () => {
             .signers([unauthorized])
             .rpc();
         assert.fail("Unauthorized account closure should have failed");
-    } catch (err: any) {
-        console.log("Unauthorized closure error:", err.toString());
-        assert.include(err.toString(), "A seeds constraint was violated.", "Expected unauthorized closure error");
+    } catch (err: unknown) {
+        const errorStr = err instanceof Error ? err.toString() : String(err);
+        console.log("Unauthorized closure error:", errorStr);
+        assert.include(errorStr, "A seeds constraint was violated.", "Expected unauthorized closure error");
     }
   });
 });

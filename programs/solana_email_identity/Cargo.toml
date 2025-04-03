@@ -23,4 +23,5 @@ anchor-debug = []
 
 [dependencies]
 anchor-lang = { version = "0.31.0", features = ["init-if-needed"] }
+solana-program = "2.1.16"
 
