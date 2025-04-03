@@ -11,6 +11,14 @@ interface RegisterUserAccounts {
   systemProgram: anchor.web3.PublicKey;
 }
 
+// Define the expected shape for the SendEmail instruction's accounts.
+interface SendEmailAccounts {
+  sender: anchor.web3.PublicKey;
+  emailAccount: anchor.web3.PublicKey;
+  vault: anchor.web3.PublicKey;
+  systemProgram: anchor.web3.PublicKey;
+}
+
 // Helper function: Airdrop SOL to a new keypair.
 async function airdropKeypair(keypair: Keypair, amount = 2 * LAMPORTS_PER_SOL) {
   const provider = anchor.AnchorProvider.local();
@@ -153,7 +161,7 @@ describe("solana_email_identity", () => {
         emailAccount: emailAccountPda,
         vault: vaultPda,
         systemProgram: anchor.web3.SystemProgram.programId,
-      } as any)
+      } as SendEmailAccounts)
       .signers([sender])
       .rpc();
 
@@ -266,7 +274,7 @@ describe("solana_email_identity", () => {
                 emailAccount: emailAccountPda,
                 vault: vaultPda,
                 systemProgram: anchor.web3.SystemProgram.programId,
-            } as any)
+            } as SendEmailAccounts)
             .signers([poorSender])
             .rpc();
         assert.fail("Send email should have failed due to insufficient funds");
@@ -370,7 +378,7 @@ describe("solana_email_identity", () => {
             emailAccount: emailAccountPda,
             vault: vaultPda,
             systemProgram: anchor.web3.SystemProgram.programId,
-        } as any)
+        } as SendEmailAccounts)
         .signers([user])
         .rpc();
     
