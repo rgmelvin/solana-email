@@ -125,7 +125,7 @@ await program.methods.registerUser().accounts({
     systemProgram: anchor.web3.SystemProgram.programId,
 }).rpc();
 ```
-- **Flowgram**:<br>
+- **```registerUser``` Flowgram**:<br>
 <img src="./diagrams/registerUser_flowgram.svg" alt="registerUser Flowgram" width="200">
 
 ### `updateUser`
@@ -157,8 +157,8 @@ await program.methods.updateUser("Alice").accounts({
 }).rpc();
 ```
 
-- **Flowgram**:
-![updateUser Flowgram](./diagrams/updateUser_flowgram.png)
+- **```updateUser``` Flowgram**:
+<img src="./diagrams/updateUser_flowgram.svg" alt="updateUser Flowgram" width="200>
 
 ### `unregisterUser`
 
