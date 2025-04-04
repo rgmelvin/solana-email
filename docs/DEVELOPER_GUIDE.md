@@ -158,7 +158,7 @@ await program.methods.updateUser("Alice").accounts({
 ```
 
 - **```updateUser``` Flowgram**:
-<img src="./diagrams/updateUser_flowgram.svg" alt="updateUser Flowgram" width="400">
+<img src="./diagrams/updateUser_flowgram.svg" alt="updateUser Flowgram" width="200">
 
 ### `unregisterUser`
 
