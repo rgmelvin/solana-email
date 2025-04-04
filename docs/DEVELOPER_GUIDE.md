@@ -126,7 +126,7 @@ await program.methods.registerUser().accounts({
 }).rpc();
 ```
 - **Flowgram**:<br>
-<img src="./diagrams/registerUser_flowgram.svg" alt="registerUser Flowgram" style="max-width:100px; height:auto;">
+<img src="./diagrams/registerUser_flowgram.svg" alt="registerUser Flowgram" width="100">
 
 ### `updateUser`
 
