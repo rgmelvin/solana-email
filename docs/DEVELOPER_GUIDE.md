@@ -66,12 +66,12 @@ The **Solana Email Identity Service** is a decentralized protocol built on the S
 
 - **Component Interaction Diagram**:
 
-    ![Diagram_1](./diagrams/component_interaction_diagram.png)
+    ![Diagram_1](./diagrams/component_interaction_diagram.png)<br>
     **Figure 1**. Illustrates the interaction between the on-chain program, client, and blockchain network.
 
 - **Data Flow Diagram**:
 
-    ![Diagram_2](./diagrams/data_flow_diagram.png)
+    ![Diagram_2](./diagrams/data_flow_diagram.png)<br>
     **Figure 2**. Shows the flow of data between user actions, PDAs, and on-chain transactions.
 
 <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
@@ -125,7 +125,7 @@ await program.methods.registerUser().accounts({
     systemProgram: anchor.web3.SystemProgram.programId,
 }).rpc();
 ```
-- **Flowgram**:
+- **Flowgram**:<br>
 ![registerUser Flowgram](./diagrams/registerUser_flowgram.png)
 
 ### `updateUser`
