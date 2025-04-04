@@ -66,7 +66,7 @@ The **Solana Email Identity Service** is a decentralized protocol built on the S
 
 - **Component Interaction Diagram**:
 
-    ![Diagram_1](./diagrams/component_interaction_diagram.png)<br>
+    ![Diagram_1](./diagrams/Solana_Web3_Email_Component_Interaction-2025-04-04-125848.png)<br>
     **Figure 1**. Illustrates the interaction between the on-chain program, client, and blockchain network.
 
 - **Data Flow Diagram**:
