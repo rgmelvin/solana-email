@@ -157,6 +157,9 @@ await program.methods.updateUser("Alice").accounts({
 }).rpc();
 ```
 
+- **Flowgram**:
+[updateUser Flowgram](diagrams/updateUser_flowgram.png)
+
 ### `unregisterUser`
 
 - **Description**:
