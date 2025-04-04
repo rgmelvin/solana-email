@@ -44,50 +44,42 @@ This document provides an in-depth look at the **Solana Email Identity Service**
 
 - [Conclusion](#Conclusion)
 
+- [Glossary of Terms](#glossary-of-terms)
+
 ---
 
 ## Architecture
 
 ### Overview
-The **Solana Email Identity Service** is a decentralized protocol built on the Solana blockchain using the Anchor framework. It manages user registration and profile management, and provides a mechanism for sending on-chain email metadata with a spam prevention deposit.
+The **Solana Email Identity Service** is a decentralized protocol built on the Solana blockchain using the Anchor framework. Its core functions include:
 
-Key components include:
+- **User Registration & Profile Management**:
+    Creating and managing user profiles using Program Derived Addresses (PDAs).
 
-- **On-Chain Program**:
+- **On-Chain Email Metadata**:
+    Loggin email metadata along with a spam prevention deposit to discourage abuse.
 
-    Written in Rust using Anchor. The program implements instructions for user registration, profile updates, unregistration, and sending emails.
-
-- **Program Derived Addresses (PDAs)**:
-
-    Deterministic addresses derived for:
-
-    - **User Profile:** `[b"user_profile", owner.key()]`
-
-    - **Email Account:** `[b"email_account", sender.key()]`
-
-    - **Vault:** `[b"vault"]`
-
-- **Client Integration:**
-
-    A TypeScript client interacts with the on-chain program to create transactions for registering users, updataing profiles, sending emails, etc.
-
+- **Secure Interactions**:
+    Ensuring that only authorized users can update or unregister their profiles through enforced constraints.
 
 ### Diagrams
 
 - **Component Interaction Diagram**:
 
-    ![Diagram_1](component_interaction_diagram.png)
+    ![Diagram_1](./diagrams/component_interaction_diagram.png)
+    **Figure 1**. Illustrates the interaction between the on-chain program, client, and blockchain network.
 
 - **Data Flow Diagram**:
 
-    ![Diagram_2](data_flow_diagram.png)
+    ![Diagram_2](./diagrams/data_flow_diagram.png)
+    **Figure 2**. Shows the flow of data between user actions, PDAs, and on-chain transactions.
 
 <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ### Technology Stack
 
-- **Rust & Anchor**: For the on-chain program.
+- **Rust & Anchor**: For building the on-chain program (e.g., Anchor CLI v0.31.0, Rust v1.85.0).
 
 - **Solana CLI**: For deploying and interacting with the bockchain.
 
@@ -119,12 +111,25 @@ Key components include:
 
 - **Custom Errors**:
 
-    - `UserAlreadyRegistered` (fi manually implemented).
+    - `UserAlreadyRegistered`: Returned if a user is already registered.
+
+- **Example**:
+```ts
+const [userProfilePDA] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("user_profile), user.toBuffer()],
+    program.programId
+);
+await program.methods.registerUser().accounts({
+    userProfile: userProfilePda,
+    owner: user,
+    systemProgram: anchor.web3.SystemProgram.programId,
+}).rpc();
+```
 
 ### `updateUser`
 
 - **Description**: 
-    Updates a user's profile with a new display name (and, in future, additional fields).
+    Updates a user's profile (e.g., the display name). Only the profile owner can update their profile.
 
 - **Accounts**:
 
@@ -138,14 +143,22 @@ Key components include:
 
 - **Custom Errors**:
 
-    - `Unauthorized`: If the signer is not the owner.
+    - `Unauthorized`: Returned if the signer is not the owner.
 
-    - Optionally, `InputLengthExceeded` if the new display name is too long.
+    - `InputLengthExceeded`: (Optional) Returned if the new display name is too long.
+
+- **Example**:
+```ts
+await program.methods.updateUser("Alice").accounts({
+    userProfile: userProfilePda,
+    owner: user,
+}).rpc();
+```
 
 ### `unregisterUser`
 
 - **Description**:
-    Closes the user profile (unregisters the user) and transfers remaining lamports to the owner.
+    Closes the user profile account and transfers any remaining lamports to the owner.
 
 - **Accounts**:
 
@@ -159,12 +172,20 @@ Key components include:
 
 - **Custom Errors**:
 
-    - `Unauthorized`: If the signer does not match the owner.
+    - `Unauthorized`: Returned if the signer does not match the owner.
+
+-**Example**:
+```ts
+await protram.methods.unregisterUser().accounts({
+    userProfile: userProfilePda,
+    owner: user,
+}).rpc();
+```
 
 ### `sendEmail`
 
 - **Description**:
-    Sends an email by creating an on-chain email account record and transferring a spam prevention deposit into a vault.
+    Sends an email by creating an on-chain email record and transferring a small deposit (spam prevention) from the sender to a vault.
 
 - **Accounts**:
 
@@ -182,7 +203,20 @@ Key components include:
 
 - **Custom Errors**:
 
-    `TransferFailed`: If the lamport transfer fails (e.g., insufficient funds).
+    `TransferFailed`: Returned if the lamport transfer fails (e.g., insufficient funds).
+
+- **Example**:
+``ts
+const [emailAccountPda] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("email_account"), sender.toBuffer()],
+    program.programId
+);
+await program.methods.sendEmail().accounts({
+    sender: sender,
+    emailAccount: emailAccountPda,
+    vault: vaultPda,
+    systemProgram: anchor.web3.SystemProgram.programId,
+}).rpc();
 
 <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
@@ -190,40 +224,40 @@ Key components include:
 ## Testing Guidelines
 
 ### Test Strategy
+My test suite covers both **happy path** and **negative test** cases:
 
 - **Happy Path Tests**:
 
-    Ensure that each instruction works as expected (user registration, update, unregistration, email sending, and full user flow).
+    - Registering a new user.
+    - Updating profile information.
+    - Unregistering a user.
+    - Sending an email with a spam prevention deposit.
+    - Complete end-to-end user journey.
 
 - **Negative Tests**:
 
-    Cover error cases such as:
-
-    - Unauthorized updates (only the owner should be able to update).
-
-    - Duplicate registration attempts.
-
+    - Unauthorized updates.
+    - Duplicate registrations.
     - Insufficient funds for email sending.
-
     - Input boundary conditions (e.g., excessively long display names).
 
 - **Edge Cases**:
 
     Test empty or malformed inputs.
 
-### Isolated Tests
+### Test Isolation
 
 - **New Keypairs**:
 
-    Each test generates a new keypair to derive unique PDAs, ensuring tests do not interfere with each other.
+    Each test generates new keypairs to ensure isolation, preventing interference between tests.
 
 - **Airdrop Helper**:
 
-    Use an airdrop helper function to ensure each keypair has sufficient lamports.
+    Helper function airdrops SOL to new keypairs to ensure they have sufficient funds.
 
-- ** Account Closure**:
+- **Account Closure**:
 
-    Use close instructoins( e.g., `unregister`) to clean up and avoid state conflicts.
+    Use the `unregisterUser` instruction to clean up state and avoid conflicts between tests.
 
 ### Running Tests
 
@@ -241,9 +275,12 @@ anchor clean && anchor build && anchor deploy
 yarn test
 ```
 
-3. **Review Test Output**:
+3. **Troubleshooting**:
 
-    Verify that tests cover all of the positive and negative scenarios.
+    If tests fail due to network issues, consider restarting the local validator:
+    ```bash
+    solana-test-validator --reset
+    ```
 
 <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
@@ -272,6 +309,9 @@ yarn test
     }
     ```
 
+    - **PDA Safety**:
+    PDAs are derived using deterministic seeds and a bump value, ensuring tha they are not directly controlled by any external keypair.
+
 - **Acount Data Storage**:
 
     Calculate account sizes precisely to avoid overflows and minimize on-chain storage costs.
@@ -293,6 +333,10 @@ yarn test
 - **External Audit**:
 
     Engage a third-party auditor before mainnet deployment.
+
+- **Dependency Management**:
+
+    Keep dependencies up-to-date and monitor for security patches.
 
 - **Documentation**:
 
@@ -317,25 +361,31 @@ Your CI/CD pipeline should automate the following:
 
 - **Checkout the Repository**
 
+    Retrieves the latest code from GitHub.
+
 - **Set Up Toolchains**:
     
-    Configure Rust, Node.js, and Yarn.
+    Configures the Rust toolchain, Node.js, and Yarn environments.
 
 - **Cache Dependencies**:
 
-    Cache Cargo and Yarn caches for faster builds.
+    Uses GitHub Actions caching for Cargo and Yarn to speed up builds.
 
 - **Install CLI Tools**:
 
-    Install the Solana CLI and Anchor CLI.
+    Installs the Solana CLI and Anchor CLI.
+
+- **Set Up Deployment Wallet**:
+
+    Uses a GitHub secret (```DEPLOY_KEYPAIR```) to set up a fixed deployment wallet located at ```~/.config/solana/id.json``` and sets the ```ANCHOR_WALLET``` environment variable accordingly.
 
 - **Build and Deploy**:
 
-    run `anchor clean`, `anchor build`, and `anchor deploy`.
+    Runs `anchor clean`, `anchor build`, and `anchor deploy` to compile and deploy the program.
 
 - **Run Tests**:
 
-    Execute the test suite using `yarn test`.
+    Executes the test suite (using `yarn test`) without re-deploying on every run.
 
 
 Example GitHub Actions workflow file (`.gihub/workflows/ci/yml`):
@@ -347,6 +397,7 @@ on:
     branches: [ main ]
   pull_requests:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-and-tests:
@@ -378,13 +429,24 @@ jobs:
           curl -sSfL https://release.solana.com/v1.18.2/jinstall | sh
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
 
-      - name: Install Anchor CLI
-        run: cargo install --git https://github.com/coral-xyz/anchor --tag v0.30.1 anchor-cli --locked --force
+      - name: Set up Anchor Wallet from Secret
+        run: |
+          mkdir -p ~/.config/solana
+          echo "$DEPLOY_KEYPAIR" > ~/.config/solana/id.json
+          echo "ANCHOR_WALLET=~/.config/solana/id.json" >> $GITHUB_ENV
+        env:
+          DEPLOY_KEYPAIR: ${{ secrets.DEPLOY_KEYPAIR }}
 
-      - name: Set Up Node
+      - name: Debug Fixed Keypair
+        run: solana-keygen pubkey ~/.config/solana/id.json
+
+      - name: Install Anchor CLI
+        run: cargo install --git https://github.com/coral-xyz/anchor --tag v0.31.0 anchor-cli --locked --force
+
+      - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: '23.7.0'
+          node-version: '18.x'
 
       - name: Cache Node dependencies
         uses: actions/cache@v3
@@ -395,15 +457,72 @@ jobs:
       - name: Install Node dependencies
         run: yarn install
 
+      - name: Add node_modules/.bin to PATH
+        run: echo "$(pwd)/node_modules/.bin" >> $GITHUB_PATH
+
+      - name: Set SBF_RUSTC environment variable
+        run: echo "SBF_RUSTC=$(which rustc)" >> $GITHUB_ENV
+
       - name: Build the Anchor program
         run: anchor build
 
-      - name: Deploy the Anchor program
-        run: anchor deploy
+      - name: Start Solana test validator
+        run: |
+          solana-test-validator --reset &
+          sleep 20
 
       - name: Run tests
-        run: yarn test
+        run: anchor test --skip-local-validator
 ```
+
+### How This Workflow Works (Step by Step)
+
+1. **Checkout Repository**:
+    The code is cloned from GitHub.
+
+2. **Toolchain Setup**:
+    The Rust toolchain is set up to ensure that all Rust commands use a consistent version.
+
+3. **Dependency Caching**:
+    Cargo registry and git repositories are cached to speed up future builds.
+
+4. **Solana CLI Installation**:
+    The Solana CLI installed using the official release command.
+
+5. **Wallet Setup**:
+    A fixed deployment wallet is set up using the ```DEPLOY_KEYPAIR``` GitHub Secret. this ensures that the same wallet is used across builds.
+
+6. **Keypair Debugging**:
+    The workflow prints the public key of the wallet to verify that the correct keypair is being used.
+
+7. **Anchor CLI Installation**:
+    Installs the Anchor CLI at the spcified version.
+
+8. **Node Setup and Dependency Caching**:
+    The Node.js environment is set up, and Yarn caches are used to optimize package installation.
+
+9. **Build Process**:
+    The Anchor program is built using ```anchor build```.
+
+10. **Local Validator**:
+    The Solana test validator is started with the ```--reset``` flag to ensure a clean environment. A short sleep ensures the validator is ready.
+
+11. **Testing**:
+    The test suite is run with ```anchor test --skip-local-validator```, which leverages the already running validator without re-deploying the program for every test run.
+
+### Reliability Considerations
+
+- ***Wallet Consistency**:
+    Using a fixed deployment wallet from a secret ensures that the same keypair is used in every CI run, reducing mismatches.
+
+- **Clean Environment**:
+    Starting the test validator with ```--reset``` minimizes the chance of conflicts due to a leftover state from previous runs.
+
+- **Caching**:
+    Caching dependencies speeds up builds and reduces network-related failures.
+
+- **Automated Environment Variables**:
+    Setting environment variables (like ```SBF_RUSTC``` and ```ANCHOR_WALLET```) ensures thata all build and deploy commends use the correct configurations.
 
 ### Automated Notificaitons
 
@@ -415,13 +534,13 @@ Configure your CI system (e.g., GitHub Actions) to send notifications (via Disco
 ## Future Roadmap
 
 - **Enhanced Email Functionality**:
-Integrate off-chain storage (e.g., Arweave) for email content.
+Integrate with decentralized storage (e.g., Arweave) for off-chain email content.
 
 - **Encryption**:
 Implement end-to-end encryption for secure email communication.
 
 - **Advance Spam Filtering & Token Rewards**:
-Develop token-based incentives and customizable spam filters.
+Develop token-based incentives and customizable spam filters, and explore cross-chain interoperability with networks like Ethereum and Polkadot.
 
 - **UI Integration**:
 Build a web-based interface for composing, sending, and receiving emails.
@@ -434,24 +553,24 @@ Expand the `UserProfile` struct to include full name, recovery options, and avat
 
 ## Conclusion
 
-This documentation outlines the architecture, API, testing, security, and CI/CD practices for the Solana Email Identity Service. Following these guidelines will help ensure that project is built to professional standards, is secure, throughly tested, and easily maintained. As the project evolves, update this document to reflect new features, changes, and improvements. 
+This document outlines the architecture, API, testing, security, and CI/CD practices for the Solana Email Identity Service. By adhering to these guidelines, the project is built to high professional standards, ensuring reliability, security, and maintainability. As the project evolves, this document should be updated to reflect new features and improvements.
 
 <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
 ## Glossary of Terms
 
-**Client**: Refers to a piece of software that interacts with the Solana network e.g., a TypeScript listing.
+**Client**: Software that interacts with the Solana network (e.g., a TypeScript client).
 
-**Program Derived Address (PDA)**: A type of address that is deterministically derived using a combination of user-defined seeds, a bump seed, and a program's ID. PDAs look like a standard public key but do not have corresponding private keys. This means that these addresses fall off of the Ed25519 curve and cannot be signed by an external user.
+**Program Derived Address (PDA)**: A deterministic address derived using user-defined seeds and a bump seed, controlled exclusively by the on-chain program.
 
-**Remote Procedure Call (RPC)**: A protocol that allows a client to request a service or data from a server, which is typically a node in the Solana network.
+**Remote Procedure Call (RPC)**: A protocol for requesting services or data from a server (blockchain node).
 
-**Cross-Program Invocation (CPI)**: A mechanism that allows one Solana program to call another program, similar to how function calls work in traditional programming but CPIs opperate at the level of smart contracts within the Solana blockchain.
+**Cross-Program Invocation (CPI)**: The mechanism that allows one Solana program to call another.
 
-**Continuous Integration and Continuous Delivery/Deployment (CI/CD)**: A set of practices in software engineering aimed at streamlining and accelerating the software development lifecycle. **Continuous Integration (CI)** is a practice where developers frequently merge their code changes into a central code repository (GitHub). **Contiuous Delivery (CD)** extends the CI process by ensuring that the software can be released to production at any time by automating building, testing, and packaging. **Continuous Deployment (CD)** is an advanced form of CD where every change that passes the automated testing is automatically deployed to production.
+**Continuous Integration and Continuous Delivery/Deployment (CI/CD)**: Continuous Integration and Continuous Deployment/Delivery practices that automate the software development process.
 
-**Solana System Program**: a native program that is crucial for operation of the Solana network. The System program acts as a foundational utility that enables the creation and management of accounts, as well as the transfer of funds and data on the Solana blockchain.
+**Solana System Program**: The native program responsible for account management and fund transfers on the Solana blockchain.
 
 
 <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>

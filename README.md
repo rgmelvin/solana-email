@@ -10,14 +10,15 @@ The Solana Email Identity Service is a decentralized protocol built on Solana us
 - **Email Sending:** Log on-chain email metadata along with a small deposit to deter spam.
 - **Comprehensive Testing:** A full suite of unit and integration tests covering both positive and negative cases.
 - **CI/CD Integration:** Automated build, deploy, and test pipeline using GitHub Actions.
+- **Security Focus:** Custom error handling and strict key managment practices.
 
 ## Getting Started
 
 ### Prerequisites
 
-- **Rust:** [Install Rust](https://www.rust-lang.org/tools/install)
-- **Anchor CLI:** [Installation Guide](https://project-serum.github.io/anchor/getting-started/installation.html)
-- **Solana CLI:** [Install Solana CLI](https://docs.solana.com/cli/install-solana-cli-tools)
+- **Rust:** [Install Rust](https://www.rust-lang.org/tools/install) (Recommended: Rust 1.85+)
+- **Anchor CLI:** [Installation Guide](https://project-serum.github.io/anchor/getting-started/installation.html) (Version 0.31.0)
+- **Solana CLI:** [Install Solana CLI](https://docs.solana.com/cli/install-solana-cli-tools) (Version 2.x)
 - **Node.js & Yarn:** [Download Node.js](https://nodejs.org/en/), [Install Yarn](https://yarnpkg.com/)
 
 ### Installation
@@ -27,11 +28,21 @@ The Solana Email Identity Service is a decentralized protocol built on Solana us
    ```bash
    git clone https://github.com/your-organization/solana-email.git
    cd solana-email
+   ```
 
 2. **Install Node Dependencies:**
 
    ```bash
    yarn install
+   ```
+
+3. **Environment Setup:**
+
+Set up your deployment keypair and environment variables. For example, ensure the fixed deployment keypair is stored securely and referenced by the ```ANCHOR_WALLET``` environment variable.
+
+```bash
+export ANCHOR_WALLET=~/.config/solana/id.json
+```
 
 ### Local Development
 
@@ -39,16 +50,19 @@ The Solana Email Identity Service is a decentralized protocol built on Solana us
 
    ```bash
    solana-test-validator --reset
+   ```
 
 2. **Build and Deploy the Program:**
 
    ```bash
    anchor clean && anchor build && anchor deploy
+   ```
 
 3. **Run the Test Suite:**
 
    ```bash
    yarn test
+   ```
 
 ### Usage
 You can interact with the deployed program using the Anchor TypeScript client. Below are examples for each of the main instructions.
@@ -159,6 +173,12 @@ To run the tests:
 ### CI/CD Integration
 My project uses GitHub Actions to automate building, deploying, and testing on every push and pull request. See the [.github/workflows/ci.yml](.github/workflows/ci.yml) file for the full configuration.
 
+### Security Considerations
+  - **Key Management**: Use a fixed deployment keypair for consistency. Avoid using a keypair that holds SOL.
+  - **Custom Errors**: The program defines custom error codes (e.g., ```Unauthorized```, ```TransferFailed```) for clarity.
+  - **Code Quality**: Run ```cargo clippy``` and ```eslint``` regularly.
+  - **Automated Testing**: The CI pipeline runs comprehensive tests to catch issues early.
+
 ### Future Roadmap
 Future enhancements include:
    - **Enhanced Email Functionality:**<br>
@@ -177,11 +197,11 @@ Future enhancements include:
          A web-/ mobile-based email client interface for a complete user experience.
 
 ### Contributing
-Contributions to and discussions of my project are welcome. I am a learner developer with aspiratons of producing a professional quality project. I am appreciative of helpful criticism and/ or just plain old help! Please contact me at rgmelvinphd@gmail.com to discuss.
+Contributions to and discussions of my project are welcome. I am a learner developer with aspiratons of producing a professional quality project. I am appreciative of helpful criticism and/ or just plain old help! Please contact me at rgmelvinphd@gmail.com to discuss. Please review the [CONTRIBUTING](CONTRIBUTING.md) and [DEVELOPER_GUIDE](DEVELOPER_GUIDE.md)file for details on coding standards, pull requests, and issue reporting.
 
 ### License
 
-This project is licensed under the Apache License 2.0. see the [LICENSE](LICENSE) file.
+This project is licensed under the Apache License 2.0. see the [LICENSE](LICENSE.md) file.
 
 ### Citation
 
