@@ -126,7 +126,7 @@ await program.methods.registerUser().accounts({
 }).rpc();
 ```
 - **Flowgram**:
-[registerUser Flowgram](diagrams/registerUser_flowgram.png)
+![registerUser Flowgram](./diagrams/registerUser_flowgram.png)
 
 ### `updateUser`
 
@@ -158,7 +158,7 @@ await program.methods.updateUser("Alice").accounts({
 ```
 
 - **Flowgram**:
-[updateUser Flowgram](diagrams/updateUser_flowgram.png)
+![updateUser Flowgram](./diagrams/updateUser_flowgram.png)
 
 ### `unregisterUser`
 
