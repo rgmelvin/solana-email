@@ -125,6 +125,8 @@ await program.methods.registerUser().accounts({
     systemProgram: anchor.web3.SystemProgram.programId,
 }).rpc();
 ```
+- **Flowgram**:
+[registerUser Flowgram](diagrams/registerUser_flowgram.png)
 
 ### `updateUser`
 

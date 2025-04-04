@@ -35,10 +35,10 @@ The **Solana Web3 Email Service** is a decentralized email system built on the S
   - **Smart Contract Development**:
     - Design and implement the core Solana program (smart contract) for user registration and profile management using Program Derived Addresses (PDAs).
     - Implement basic instruction for:
-      - ```registerUser`` (creating a PDA-based user profile)
-      - ```updateUser`` (updating profile information, e.g., display name)
+      - ```registerUser``` (creating a PDA-based user profile)
+      - ```updateUser``` (updating profile information, e.g., display name)
       - ```unregisterUser``` (closing the progile and reclaiming lamports)
-      - ```sendEmail`` (recording email metadata with a spam prevention deposit)
+      - ```sendEmail``` (recording email metadata with a spam prevention deposit)
 
   - **Testing & CI/CD**:
     - Develop comprehensive unit and integration tests.
