@@ -119,7 +119,7 @@ The **Solana Web3 Email Service** is a decentralized email system built on the S
 <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
 
-## Achitecture Overview
+## Architecture Overview
 
 The project is architected with a clear separation between on-chain and off-chain components:
 
@@ -137,11 +137,11 @@ The project is architected with a clear separation between on-chain and off-chai
 ### High-Level System Architecture
 
   ### Component Interaction Diagram
-  [Component Interaction Diagram](diagrams/Solana_Web3_Email_Component_Interaction-2025-04-04-125848.png)
+  [Component Interaction Diagram](./diagrams/Solana_Web3_Email_Component_Interaction-2025-04-04-125848.png)<br>
   ***Figure 1***. Diagram illustrating how the main components interact.
 
   ### Data Flow Diagram
-  [Data Flow Diagram](diagrams/Editor%20_%20Mermaid%20Chart-2025-04-04-131925.png)
+  [Data Flow Diagram](./diagrams/Editor%20_%20Mermaid%20Chart-2025-04-04-131925.png)
   ***Figure 2***. Diagram showing the typical data flow for a user registering and sending an email.
 
 <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
