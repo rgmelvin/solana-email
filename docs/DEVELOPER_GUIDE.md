@@ -181,7 +181,7 @@ await program.methods.updateUser("Alice").accounts({
 
 -**Example**:
 ```ts
-await protram.methods.unregisterUser().accounts({
+await program.methods.unregisterUser().accounts({
     userProfile: userProfilePda,
     owner: user,
 }).rpc();
@@ -214,7 +214,7 @@ await protram.methods.unregisterUser().accounts({
     `TransferFailed`: Returned if the lamport transfer fails (e.g., insufficient funds).
 
 - **Example**:
-``ts
+```ts
 const [emailAccountPda] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("email_account"), sender.toBuffer()],
     program.programId
@@ -225,6 +225,10 @@ await program.methods.sendEmail().accounts({
     vault: vaultPda,
     systemProgram: anchor.web3.SystemProgram.programId,
 }).rpc();
+```
+
+- **```sendEmail``` Flowgram**:
+<img src="./diagrams/sendEmail_flowgram.svg" alt="sendEmail Flowgram" width="200">
 
 <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
