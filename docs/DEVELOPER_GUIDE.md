@@ -187,6 +187,9 @@ await protram.methods.unregisterUser().accounts({
 }).rpc();
 ```
 
+- **```unregisterUser``` Flowgram**:
+<img src="./diagrams/unregisterUser_flowgram.svg" alt="unregisterUser Flowgram" width="200">
+
 ### `sendEmail`
 
 - **Description**:
