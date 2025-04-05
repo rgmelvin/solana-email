@@ -228,7 +228,7 @@ await program.methods.sendEmail().accounts({
 ```
 
 - **```sendEmail``` Flowgram**:
-<img src="./diagrams/sendEmail_flowgram.svg" alt="sendEmail Flowgram" width="200">
+<img src="./diagrams/sendEmail_flowgram.svg" alt="sendEmail Flowgram" width="300">
 
 <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 ---
