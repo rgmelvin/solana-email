@@ -10,6 +10,16 @@ declare_id!("Cu7rFcADfVuie5pCTLVFshpAHn862iYqsWsGuFuijYT1");
 pub mod solana_email_identity {
     use super::*;
 
+    /// Initializes the configuration account for administrative settings.
+    pub fn initialize_config(ctx: Context<InitializeConfig>) -> Resutl<()> {
+        let config = &mut ctx.accounts.config;
+        config.admin = ctx.accounts.admin.key();
+        config.total_fees_collected = 0;
+        config.bump = *ctx.bumps.get("config").unwrap();
+        msg!("Config initialize with admin: {}", config.admin);
+        Ok(())
+    }
+
     /// Registers a new user by createing a PDA-based user profile.
     pub fn register_user(ctx: Context<RegisterUser>) -> Result<()> {
         let user_profile = &mut ctx.accounts.user_profile;
@@ -46,12 +56,14 @@ pub mod solana_email_identity {
 
         // Set deposit amount (e.g. 0.001 SOL)
         let deposit_amount: u64 = 1_000_000;
+        let admin_fee: u64 = deposit_amount / 10;   //10% fee
+        let net_deposit: u64 = deposit_amount = admin_fee;  // 90% to vault
 
-        // Transfer lamports from sender to vault using CPI to system program.
-        let ix = anchor_lang::solana_program::system_instruction::transfer(
+        // Transfer net_deposit to the vault.
+        let ix_vault = anchor_lang::solana_program::system_instruction::transfer(
             &ctx.accounts.sender.key(),
             &ctx.accounts.vault.key(),
-            deposit_amount,
+            net_deposit,
         );
         anchor_lang::solana_program::program::invoke_signed(
             &ix,
@@ -63,9 +75,37 @@ pub mod solana_email_identity {
             &[&[b"vault", &[ctx.bumps.vault]]],
         )
         .map_err(|_| ErrorCode::TransferFailed)?;
-        msg!("Email sent from {} with deposit {} lamports", email_account.sender, deposit_amount);
+
+        // Update total fees collected in the config.
+        let config = &mut ctx.account.config;
+        config.total_fees_collected = config
+            .total_fees_collected
+            .checked_add(admin_fee)
+            .ok_or(ErrorCode::TransferFailed)?;
+
+        msg!("Email sent from {} with deposit {} lamports (admin fee: {} lamports)",
+            email_account.sender,
+            deposit_amount
+            admin_fee
+        );
         Ok(())
     }
+}
+
+/// Accounts context for initializing the configuration account.
+#[derive(Accounts)]
+pub struct InitializeConfig<'info> {
+    #[account(
+        init,
+        payer = admin,
+        space = 8 + config::SIZE,
+        seeds = [b"config"],
+        bump
+    )]
+    pub config: Account<'info, Config>,
+    #[account(mut)]
+    pub admin: Signer<'info>,
+    pub system_program: Program<'info>, System>,
 }
 
 /// Accounts context for the 'register_user' instruction.
@@ -90,6 +130,7 @@ pub struct RegisterUser<'info> {
     pub system_program: Program<'info, System>,
 }
 
+/// Accounts context for the 'update_user' instruction.
 #[derive(Accounts)]
 pub struct UpdateUser<'info> {
     /// the user profile PDA to be updated.
@@ -105,6 +146,7 @@ pub struct UpdateUser<'info> {
     pub owner: Signer<'info>,
 }
 
+/// Accounts context for the 'unregister_user instruction.
 #[derive(Accounts)]
 pub struct UnregisterUser<'info> {
     /// The user profile PDA to be closed.
@@ -124,6 +166,7 @@ pub struct UnregisterUser<'info> {
     pub owner: Signer<'info>,
 }
 
+/// Accounts context for the 'send_email' instruction.
 #[derive(Accounts)]
 pub struct SendEmail<'info> {
     /// The sender of the email.
@@ -149,6 +192,14 @@ pub struct SendEmail<'info> {
         bump
     )]
     pub vault: Account<'info, Vault>,
+
+    /// The configuration account storing the admin key and fee totals.
+    #[account(
+        mut,
+        seeds = [b"config"],
+        bump = config.bump
+    )]
+    pub config: Account<'info>, Config>,
 
     /// The Solana system program.
     #[account(address = system_program::ID)]
@@ -180,7 +231,7 @@ impl Email {
     pub const SIZE: usize = 32 +1;
 }
 
-// The vault that holds spam deposits.
+/// The vault that holds spam deposits.
 #[account]
 pub struct Vault {
     pub total_deposits: u64,
@@ -189,6 +240,18 @@ pub struct Vault {
 
 impl Vault {
     pub const SIZE: usize = 8 + 1;
+}
+
+/// The configuration account for administrative settings.
+#[account]
+pub struct Config {
+    pub admin: Pubkey,
+    pub total_fees_collected: u64,
+    pub bump: u8,
+}
+
+impl Config {
+    pub const SIZE: usize = 32 + 8 + 1;
 }
 
 #[error_code]
