@@ -20,49 +20,49 @@ This document serves as the handoff for Phase 1 of the Solana Email identity Ser
 ### 2.1 Key Components
 
 - **On-chain Program (Rust/Anchor)**:
-    Implements all instructions for user registration, profile updates, unregistration, and email sending. PDAs are derived from fixed seeds (e.g., ```user_profile```, ```email_account```, and ```vault```).
+  Implements all instructions for user registration, profile updates, unregistration, and email sending. PDAs are derived from fixed seeds (e.g., `user_profile`, `email_account`, and `vault`).
 
 - **Client Integration (TypeScript/Node.js)**:
-    A TypeScript client interacts with the on-chain program to issue transactions and run comprehensive tests.
+  A TypeScript client interacts with the on-chain program to issue transactions and run comprehensive tests.
 
 - **CI/CD Pipeline**:
-    GitHub Actions are used to automate building, deploying, and testing. The workflow includes static analysis (Cargo Clippy for Rust and ESLint for TypeScript) and tests on each commit/ PR.
+  GitHub Actions are used to automate building, deploying, and testing. The workflow includes static analysis (Cargo Clippy for Rust and ESLint for TypeScript) and tests on each commit/ PR.
 
 ### 2.2 Diagrams
 
 - **Component Interaction Diagram**:
-![Diagram_1](./diagrams/component_interaction_diagram.png)
-    **Figure 1**. Illustrates the interaction between the on-chain program, client, and blockchain network.
+  ![Diagram_1](./diagrams/component_interaction_diagram.png)
+  **Figure 1**. Illustrates the interaction between the on-chain program, client, and blockchain network.
 
 - **Data Flow Diagram**:
-![Diagram_2](./diagrams/data_flow_diagram.png)
-    **Figure 2**. Shows the flow of data between user actions, PDAs, and on-chain transactions.
+  ![Diagram_2](./diagrams/data_flow_diagram.png)
+  **Figure 2**. Shows the flow of data between user actions, PDAs, and on-chain transactions.
 
 ---
 
 ## Completed Work in Phase 1
 
 - **Core Functionality**:
-    - PDA-based user registration and profile management.
-    - Unregistration (account closure) with lamport transfer.
-    - On-chain email metadata logging with spam prevention deposit.
+
+  - PDA-based user registration and profile management.
+  - Unregistration (account closure) with lamport transfer.
+  - On-chain email metadata logging with spam prevention deposit.
 
 - **Testing**:
-    - Comprehensive unit and integration tests covering positive and negative scenarios.
-    - Automated testing via GitHub Actions.
+
+  - Comprehensive unit and integration tests covering positive and negative scenarios.
+  - Automated testing via GitHub Actions.
 
 - ** CI/CD Integration**:
-    - GitHub Actions workflow configured for building, deploying, and testing.
-    - Automated linting using Cargo Clippy and ESLint.
+
+  - GitHub Actions workflow configured for building, deploying, and testing.
+  - Automated linting using Cargo Clippy and ESLint.
 
 - **Documentation**:
-    - Detailed README, Developer Guide, and Security Guide have been completed.
-    - API references for all on-chain instructions.
+  - Detailed README, Developer Guide, and Security Guide have been completed.
+  - API references for all on-chain instructions.
 
--**Security Best Practices**:
-    - Authorization constraints (e.g, ```has_one = owner```).
-    - Custom error codes for clear failure messaging.
-    - Static analysis and regular dependency updates.
+-**Security Best Practices**: - Authorization constraints (e.g, `has_one = owner`). - Custom error codes for clear failure messaging. - Static analysis and regular dependency updates.
 
 ---
 
@@ -70,36 +70,41 @@ This document serves as the handoff for Phase 1 of the Solana Email identity Ser
 
 ### 4.1 Finalization for Phase 1
 
-- **Code Quality****:
-    - Ensure all linting (both Rust and TypeScript) is error-free.
-    - Review and finalize all tests for consistent test coverage.
+- **Code Quality\*\***:
+
+  - Ensure all linting (both Rust and TypeScript) is error-free.
+  - Review and finalize all tests for consistent test coverage.
 
 - **CI/CD Improvements**:
-    - Fine-tune GitHub Actions workflows to reduce deployment issues.
-    - Address any remaining issues with keypair handling and program ID consistency.
+
+  - Fine-tune GitHub Actions workflows to reduce deployment issues.
+  - Address any remaining issues with keypair handling and program ID consistency.
 
 - **Documentation Enhancements**:
-    - Finalize the Developer Guide with any additional architectural diagrams.
-    - Update the Security Guide with the latest recommendations and known limitations.
-    - Prepare a detailed Handoff Document (this document) summarizing the current state and outlining next steps.
+  - Finalize the Developer Guide with any additional architectural diagrams.
+  - Update the Security Guide with the latest recommendations and known limitations.
+  - Prepare a detailed Handoff Document (this document) summarizing the current state and outlining next steps.
 
 ### 4.2 Recommendations for Phase 2
 
 - **Feature Enhancements**:
-    - Expand the user profile data to include additional fields (full name, recovery email, avatar, etc.).
-    - Implement cros-chain compatibility and integration with decentralized storage (e.g., Arweave, Metaplex, or IPFS) for off-chain email content.
-    - Explore advanced spam filtering and incentive mechanisms (tokenomics)
+
+  - Expand the user profile data to include additional fields (full name, recovery email, avatar, etc.).
+  - Implement cros-chain compatibility and integration with decentralized storage (e.g., Arweave, Metaplex, or IPFS) for off-chain email content.
+  - Explore advanced spam filtering and incentive mechanisms (tokenomics)
 
 - **UI/UX Development**:
-    - Develop a user-friendly web and/ or mobile client interface for composing, sending, and receiving emails.
+
+  - Develop a user-friendly web and/ or mobile client interface for composing, sending, and receiving emails.
 
 - **Security Audits**:
-    - Engage a third-party security auditor to review the code base before mainnet deployment.
-    - Implement continuous monitoring and scheduled security reviews.
+
+  - Engage a third-party security auditor to review the code base before mainnet deployment.
+  - Implement continuous monitoring and scheduled security reviews.
 
 - **Scalability and Performance**:
-    - Optimize on-chain data storage and transaction efficiency.
-    - Evaluate and plan for scaling the solution as user adoption increases.
+  - Optimize on-chain data storage and transaction efficiency.
+  - Evaluate and plan for scaling the solution as user adoption increases.
 
 ---
 
@@ -109,17 +114,17 @@ Before handing off Phase 1, ensure the following:
 
 - ⬜️ All unit and integration tests are passing locally and in CI.
 
-- ⬜️  CI/CD pipelines (GitHub Actions) are stable and reproducible.
+- ⬜️ CI/CD pipelines (GitHub Actions) are stable and reproducible.
 
-- ⬜️  Documentation (README, Developer Guide, Security Guide) is complete and reviewed.
+- ⬜️ Documentation (README, Developer Guide, Security Guide) is complete and reviewed.
 
-- ⬜️  Code has been reviewed and linted with Cargo Clippy and ESLint.
+- ⬜️ Code has been reviewed and linted with Cargo Clippy and ESLint.
 
-- ⬜️  A comprehensive changelog has been maintained.
+- ⬜️ A comprehensive changelog has been maintained.
 
-- ⬜️  Dependencies are updated and compatible with the target toolchains.
+- ⬜️ Dependencies are updated and compatible with the target toolchains.
 
-- ⬜️  The project is deployed on a testnet with a fixed program ID that is consistent across the codebase.
+- ⬜️ The project is deployed on a testnet with a fixed program ID that is consistent across the codebase.
 
 ---
 
@@ -132,4 +137,4 @@ For questions or further discussions, contact the Phase 1 team at [rgmelvinphd@g
 
 ---
 
-*This document is maintained by the Phase 1 team. All contributions and revisions should be documented in the project's changelog.*
+_This document is maintained by the Phase 1 team. All contributions and revisions should be documented in the project's changelog._

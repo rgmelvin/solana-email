@@ -8,8 +8,8 @@ This guide details the security practices and processes for the Solana Email Ide
 
 - [Security Model](#security-model)
 - [Static Analysis and Linting](#static-analysis-and-linting)
-    - [Rust Code (Cargo Clippy)](#rust-code-cargo-clippy)
-    - [Typescript Code (ESLint)](#typescript-code-eslint)
+  - [Rust Code (Cargo Clippy)](#rust-code-cargo-clippy)
+  - [Typescript Code (ESLint)](#typescript-code-eslint)
 - [Dependency Management](#dependency-management)
 - [Error Handling and Custom Errors](#error-handling-and-custom-errors)
 - [Best Practices and Recommendations](#best-practices-and-recommendations)
@@ -38,6 +38,7 @@ This guide details the security practices and processes for the Solana Email Ide
     UserAlreadyRegistered,
   }
   ```
+
   These custom errors messages make it easier to debug issue and inform end users of the specific failure conditions.
 
   - **Data Storage**:
@@ -46,77 +47,77 @@ This guide details the security practices and processes for the Solana Email Ide
   - **Cross Program Invocation (CPI) Safety**:
     When performing CPIs (e.g., lamport transfers usinng the System Program), errors from external calls are mapped to custom error codes. This improves clarity and ensures that failure conditions are consistently handled.
 
-<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
----
+## <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 
 ## Static Analysis and Linting
 
 ### Rust Code (Cargo Clippy)
-  We use [Cargo Clippy](#https://doc.rust-lang.org/clippy/usage.html) to detect common mistakes and enforce best practices in the Rust code. Run Clippy with the following command in the project root to ensure a clean code base:
 
-  ```bash
-  cargo clippy --all-targets --all-features -- -D warnings
-  ```
+We use [Cargo Clippy](#https://doc.rust-lang.org/clippy/usage.html) to detect common mistakes and enforce best practices in the Rust code. Run Clippy with the following command in the project root to ensure a clean code base:
 
-  - **Explanation**:
-    - `--all-targets`: Checks all targets (library, binary, tests, etc.).
-    - `--all-features`: Checks code with all enabled features.
-    - `-D warnings`: Treats all warnings as errors to enforce a high standard of code quality.
+```bash
+cargo clippy --all-targets --all-features -- -D warnings
+```
 
-  **Documentation Note**:
-  The above commands are included in the **Developer Guide** with the requirement that no Clippy warnings are present in CI.
+- **Explanation**:
+  - `--all-targets`: Checks all targets (library, binary, tests, etc.).
+  - `--all-features`: Checks code with all enabled features.
+  - `-D warnings`: Treats all warnings as errors to enforce a high standard of code quality.
+
+**Documentation Note**:
+The above commands are included in the **Developer Guide** with the requirement that no Clippy warnings are present in CI.
 
 ### TypeScript Code (ESLint)
-  For the TypeScript code (e.g., the tests and client code), I use [ESLint](#https://eslint.org/docs/latest/) with the TypeScript support.
 
-  1. **Installation**:
-  ```bash
-  yarn add --dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
-  ```
+For the TypeScript code (e.g., the tests and client code), I use [ESLint](#https://eslint.org/docs/latest/) with the TypeScript support.
 
-  2. **Configuration**: Create a ```.eslintrc.json``` file:
-  ```json
-  {
-    "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
-    ],
-    "env": {
-        "node": true,
-        "mocha": true
-    },
-    "rules": {
-        "semi": ["error", "always"],
-        "quotes": ["error", "single"]
-    }
+1. **Installation**:
+
+```bash
+yarn add --dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+```
+
+2. **Configuration**: Create a `.eslintrc.json` file:
+
+```json
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "rules": {
+    "semi": ["error", "always"],
+    "quotes": ["error", "single"]
   }
-  ```
+}
+```
 
-  3. **Running ESLint**:
-  ```bash
-  yarn eslint . --ext .ts
-  ```
+3. **Running ESLint**:
+
+```bash
+yarn eslint . --ext .ts
+```
+
 **Documentation Note**:
 ESLint configuration and command are also listed in the **Developer Guide**.
 
-<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
----
+## <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 
 ## Dependency Management
 
 - **Regular Updates**:
-    Run `cargo update` periodically to refresh dependency versions. Always check the compatibility of transitive dependencies with your toolchain.
+  Run `cargo update` periodically to refresh dependency versions. Always check the compatibility of transitive dependencies with your toolchain.
 
 - **Lock File Consistency**:
-    Keep the `Cargo.lock` file under version control to ensure reproducible builds locally and in the CI.
+  Keep the `Cargo.lock` file under version control to ensure reproducible builds locally and in the CI.
 
 - **Overriding Dependencies (if needed)**:
-    If a transitive dependency (e.g., `bytemuck_derive`) requires a newer Rust compiler (rustc) version than the toolchain provides, consider using the `[patch.crates-io]` section in `Cargo.toml` to override it with a compatible version.
+  If a transitive dependency (e.g., `bytemuck_derive`) requires a newer Rust compiler (rustc) version than the toolchain provides, consider using the `[patch.crates-io]` section in `Cargo.toml` to override it with a compatible version.
 
-<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
----
+## <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 
 ## Error Handling and Custom Errors
 
@@ -133,75 +134,78 @@ pub enum ErrorCode {
     UserAlreadyRegistered,
 }
 ```
+
 - **Testing Errors**:
-    When writing tests, asset that the error messages (or codes) match the expected values. For example:
+  When writing tests, asset that the error messages (or codes) match the expected values. For example:
 
-    ```ts
-    try {
-        await program.methods
-            .updateUser("UnauthorizedUpdate")
-            .accounts({
-                userProfile: userProfilePda,
-                owner: unauthorizedUser.publicKey,
-            })
-            .signers([unauthorizedUser])
-            .rpc();
-        assert.fail("Unauthorized update should have failed");
-    } catch (err: any) {
-        // Check that the error string contains the expected custom error code or message.
-        assert.include(err.toString(), "2006", "Expected error code 2006 for unauthorized update");
-    }
-    ```
+  ```ts
+  try {
+    await program.methods
+      .updateUser("UnauthorizedUpdate")
+      .accounts({
+        userProfile: userProfilePda,
+        owner: unauthorizedUser.publicKey,
+      })
+      .signers([unauthorizedUser])
+      .rpc();
+    assert.fail("Unauthorized update should have failed");
+  } catch (err: any) {
+    // Check that the error string contains the expected custom error code or message.
+    assert.include(
+      err.toString(),
+      "2006",
+      "Expected error code 2006 for unauthorized update"
+    );
+  }
+  ```
 
-    **Documentation Note**:
-    Each custom error is documented in the **API Reference** section of the **Developer Guide** along with the context in which it is used.
+  **Documentation Note**:
+  Each custom error is documented in the **API Reference** section of the **Developer Guide** along with the context in which it is used.
 
-<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
----
+## <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 
 ## Best Practices and Recommendations
 
 - **Code Reviews**:
-    Regularly perform internal code reviews to catch potential security issues before they are merged.
+  Regularly perform internal code reviews to catch potential security issues before they are merged.
 - **Automated Linting**:
-    Integrate **Cargo Clippy** and **ESLint** into your CI/CD pipeline to enforce coding standards.
+  Integrate **Cargo Clippy** and **ESLint** into your CI/CD pipeline to enforce coding standards.
 - **Security Audits**:
-    When preparing for mainnet deployment, consider engaging external auditors for a security review.
+  When preparing for mainnet deployment, consider engaging external auditors for a security review.
 - **Minimal On-Chain Storage**:
-    Store only essential data on-chain. For larger data (e.g., images or detailed user profiles), store references (such as IPFS hashes) instead.
+  Store only essential data on-chain. For larger data (e.g., images or detailed user profiles), store references (such as IPFS hashes) instead.
 - **Testing Negative Casses**:
-    Ensure that tests cover unauthorized actions, duplicate registrations, and boundary conditions.
+  Ensure that tests cover unauthorized actions, duplicate registrations, and boundary conditions.
 
-<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
----
+## <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 
 ## CI/CD Integration for Security
 
 The CI/CD pipeline automatically runs the build, lint, and test suites on every push. This includes:
+
 - Running `cargo clippy` and failing the build if warnings are detected.
 - Running ESLint on our TypeScript code.
 - Building and deploying the on-chain program using the updated Solana CLI and BPF toolchain.
 - Running the comprehensive test suite.
 
 **Documentation Note**:
- The CI/CD configuration (e.g., `.github/workflows/ci.yml`) is included in the repository and the purpose of each step is documented in the **Developer Guide**.
+The CI/CD configuration (e.g., `.github/workflows/ci.yml`) is included in the repository and the purpose of each step is documented in the **Developer Guide**.
 
-<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
----
+## <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 
 ## External Audits and Ongoing Reviews
 
 - **External Audits**:
-    For mainnet deployment, it is recommended to have the code audited by a third-party security firm with experience in Solana smart contracts.
+  For mainnet deployment, it is recommended to have the code audited by a third-party security firm with experience in Solana smart contracts.
 - **Ongoing Reviews**:
-    Periodic, scheduled, security reviews are to be implemented to ensure that new code changes do not introduce vulnerabilities. Any changes or security updates are documented in a dedicated change log.
+  Periodic, scheduled, security reviews are to be implemented to ensure that new code changes do not introduce vulnerabilities. Any changes or security updates are documented in a dedicated change log.
 - **Documentation of Changes**:
-    A change log is maintained that documents security patches, dependency updates, and any modifications to the security model.
+  A change log is maintained that documents security patches, dependency updates, and any modifications to the security model.
 
-<a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
----
+## <a href="#table-of-contents" title="Back to Table of Contents">⤴️</a>
 
 ## Conclusion
+
     This **Security Guide** outlines the approach to ensuring that the **Solana Email Identity Service** is secure, maintainable, and built to professional standards. By adhering to the practices described here - including static analysis, dependency management, CI/CD integration, and regular security audits - I aim to provide a robust and reliable foundation for the decentralized emial identity service.
 
     For questions or further updates, please refer to this guide or contact me (Rich) [rgmelvinphd@gmail.com](mailto:rgmelvinphd@gmail.com). I prefer open communication.

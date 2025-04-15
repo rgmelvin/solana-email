@@ -38,7 +38,7 @@ The Solana Email Identity Service is a decentralized protocol built on Solana us
 
 3. **Environment Setup:**
 
-Set up your deployment keypair and environment variables. For example, ensure the fixed deployment keypair is stored securely and referenced by the ```ANCHOR_WALLET``` environment variable.
+Set up your deployment keypair and environment variables. For example, ensure the fixed deployment keypair is stored securely and referenced by the `ANCHOR_WALLET` environment variable.
 
 ```bash
 export ANCHOR_WALLET=~/.config/solana/id.json
@@ -65,29 +65,34 @@ export ANCHOR_WALLET=~/.config/solana/id.json
    ```
 
 ### Usage
+
 You can interact with the deployed program using the Anchor TypeScript client. Below are examples for each of the main instructions.
 
 ### Register a New User
 
 This example creates a new user profile. The PDA (Program Derived Address) for the user profile derived from the seed "user_profile" and the owner's public key.
 
-   ```ts
-   const provider = anchor.AnchorProvider.local();
-   anchor.setProvider(provider);
-   const program = anchor.workspace.SolanaEmailIdentity as Program<SolanaEmailIdentity>;
+```ts
+const provider = anchor.AnchorProvider.local();
+anchor.setProvider(provider);
+const program = anchor.workspace
+  .SolanaEmailIdentity as Program<SolanaEmailIdentity>;
 
-   const user = provider.wallet.publicKey;
-   const [userProfilePda] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("user_profile"), user.toBuffer()],
-      program.programId
-   );
+const user = provider.wallet.publicKey;
+const [userProfilePda] = anchor.web3.PublicKey.findProgramAddressSync(
+  [Buffer.from("user_profile"), user.toBuffer()],
+  program.programId
+);
 
-   await program.methods.registerUser().accounts({
-      userProfile: userProfilePda,
-      owner: user,
-      systemProgram: anchor.web3.SystemProgram.programId,
-   }).rpc();
-   ```
+await program.methods
+  .registerUser()
+  .accounts({
+    userProfile: userProfilePda,
+    owner: user,
+    systemProgram: anchor.web3.SystemProgram.programId,
+  })
+  .rpc();
+```
 
 ### Update User Profile
 
@@ -97,106 +102,112 @@ To update a user's profile (for example, to change the display name), call the u
 const newDisplayName = "Alice";
 
 // Assuming you have already registered the user and derived the PDA:
-await program.methods.updateUser(newDisplayName)
-    .accounts({
-        userProfile: userProfilePDA,
-        owner: user,
-    })
-    .rpc();
+await program.methods
+  .updateUser(newDisplayName)
+  .accounts({
+    userProfile: userProfilePDA,
+    owner: user,
+  })
+  .rpc();
 ```
 
 ### Unregister User
 
-This instruction closes the user profile account and transfers any remaining lamports to the owner's wallet. The ```close``` attribute in the account context ensures that the funds are returned.
+This instruction closes the user profile account and transfers any remaining lamports to the owner's wallet. The `close` attribute in the account context ensures that the funds are returned.
 
 ```ts
-await program.methods.unregisterUser()
-    .accounts({
-        userProfile: userProfilePDA,
-        owner: user,
-    })
-    .rpc();
+await program.methods
+  .unregisterUser()
+  .accounts({
+    userProfile: userProfilePDA,
+    owner: user,
+  })
+  .rpc();
 ```
 
 ### Send Email with Spam Prevention Deposit
 
-When sending an email, the program creates an on-chain record (email account) and transfers a small deposit (to deter spam) from the sender to a vault. The email account PDA is derived from the seed ```"email_account"``` and the sender's public key. The vault PDA is derived from a fixed seed (e.g., ```"vault"```).
+When sending an email, the program creates an on-chain record (email account) and transfers a small deposit (to deter spam) from the sender to a vault. The email account PDA is derived from the seed `"email_account"` and the sender's public key. The vault PDA is derived from a fixed seed (e.g., `"vault"`).
 
 ```ts
 const sender = provider.wallet.publicKey;
 const [emailAccountPda] = anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("email_account"), sender.toBuffer()],
-    program.programId
+  [Buffer.from("email_account"), sender.toBuffer()],
+  program.programId
 );
 const [vaultPDA] = anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("vault")],
-    program.programId
+  [Buffer.from("vault")],
+  program.programId
 );
 
-await program.methods.sendEmail()
-    .accounts({
-        sender: sender,
-        emailAccount: emailAccountPda,
-        vault: vaultPda,
-        systemProgram: anchor.web3.SystemProgram.programId,
-    })
-    .rpc();
+await program.methods
+  .sendEmail()
+  .accounts({
+    sender: sender,
+    emailAccount: emailAccountPda,
+    vault: vaultPda,
+    systemProgram: anchor.web3.SystemProgram.programId,
+  })
+  .rpc();
 ```
 
 Each of these code snippets assumes that you have built, deployed, and correctly configured the program on your local validator (or target network). Adjust the code as necessary for your environment and further integration with your UI or API.
 
 ### Testing
+
 My test suite covers the following scenarios:
-   - **Registering a New User:**<br>
-         Verifies that a user profile can be created.
-     
-   - **Updating Profile Information:**<br>
-         Tests successful updates and checks that unauthorized updates fail.
-     
-   - **Unregistering a User:**<br>
-         Ensures the user profile is closed and funds are reclaimed.
-     
-   - **Sending an Email with Deposit:**<br>
-         Confirms that the spam prevention deposit mechanism works.
-     
-   - **Negative Tests:**<br>
-         Covers duplicate registration, insufficient funds, input boundary errors (e.g. overly long user names).
-     
-   - **End-To-End User Journey:**<br>
-         Comfirms full functionality in a real use case situation.
-     
+
+- **Registering a New User:**<br>
+  Verifies that a user profile can be created.
+- **Updating Profile Information:**<br>
+  Tests successful updates and checks that unauthorized updates fail.
+- **Unregistering a User:**<br>
+  Ensures the user profile is closed and funds are reclaimed.
+- **Sending an Email with Deposit:**<br>
+  Confirms that the spam prevention deposit mechanism works.
+- **Negative Tests:**<br>
+  Covers duplicate registration, insufficient funds, input boundary errors (e.g. overly long user names).
+- **End-To-End User Journey:**<br>
+  Comfirms full functionality in a real use case situation.
+
 To run the tests:
-   ``` bash
-       yarn test
-   ```
+
+```bash
+    yarn test
+```
 
 ### CI/CD Integration
+
 My project uses GitHub Actions to automate building, deploying, and testing on every push and pull request. See the [.github/workflows/ci.yml](.github/workflows/ci.yml) file for the full configuration.
 
 ### Security Considerations
-  - **Key Management**: Use a fixed deployment keypair for consistency. Avoid using a keypair that holds SOL.
-  - **Custom Errors**: The program defines custom error codes (e.g., ```Unauthorized```, ```TransferFailed```) for clarity.
-  - **Code Quality**: Run ```cargo clippy``` and ```eslint``` regularly.
-  - **Automated Testing**: The CI pipeline runs comprehensive tests to catch issues early.
+
+- **Key Management**: Use a fixed deployment keypair for consistency. Avoid using a keypair that holds SOL.
+- **Custom Errors**: The program defines custom error codes (e.g., `Unauthorized`, `TransferFailed`) for clarity.
+- **Code Quality**: Run `cargo clippy` and `eslint` regularly.
+- **Automated Testing**: The CI pipeline runs comprehensive tests to catch issues early.
 
 ### Future Roadmap
+
 Future enhancements include:
-   - **Enhanced Email Functionality:**<br>
-         Integration with decentralized storage (e.g., Arweave) for off-chain email content.
 
-   - **Email Encryption:**<br>
-         End-to-end encryption to ensure privacy.
+- **Enhanced Email Functionality:**<br>
+  Integration with decentralized storage (e.g., Arweave) for off-chain email content.
 
-   - **Advanced Spam Filtering & Rewards:**<br>
-         Implement tokenomics and user-defined filters.
+- **Email Encryption:**<br>
+  End-to-end encryption to ensure privacy.
 
-   - **User Profile Enhancements:**<br>
-         Support additional fields such as full name, recovery options, and avatar pointers.
+- **Advanced Spam Filtering & Rewards:**<br>
+  Implement tokenomics and user-defined filters.
 
-   - **UI Integration:**<br>
-         A web-/ mobile-based email client interface for a complete user experience.
+- **User Profile Enhancements:**<br>
+  Support additional fields such as full name, recovery options, and avatar pointers.
+
+- **UI Integration:**<br>
+  A web-/ mobile-based email client interface for a complete user experience.
 
 ### Contributing
+
 Contributions to and discussions of my project are welcome. I am a learner developer with aspiratons of producing a professional quality project. I am appreciative of helpful criticism and/ or just plain old help! Please contact me at rgmelvinphd@gmail.com to discuss. Please review the [CONTRIBUTING](CONTRIBUTING.md) and [DEVELOPER_GUIDE](DEVELOPER_GUIDE.md)file for details on coding standards, pull requests, and issue reporting.
 
 ### License
@@ -212,11 +223,12 @@ If you use this software in your research or projects, please cite it as follows
 > Available at: https://github.com/rgmelvin/solana-email
 >
 > BibTeX:
->```bibtex
->@misc{solana_email_identity,
+>
+> ```bibtex
+> @misc{solana_email_identity,
 >  author = {Richard G. Melvin},
 >  title = {Solana Email Identity Service},
 >  year = {2025}
 >  note = {Available at https://github.com/rgmelvin/solana-email}
->}
->```
+> }
+> ```

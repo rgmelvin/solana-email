@@ -7,22 +7,27 @@ The format is bsed on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), 
 ---
 
 ## [Unreleased]
+
 ### Added
+
 - New API endpoint for sending email with spam prevention deposit.
 - Support for updating additional profile fields (full name, recovery email).
 
 ### Fixed
+
 - Resolved issue with duplicate registration error handling.
 
 ---
 
 ## [1.0.0] - 2025-04-03
+
 ### Added
+
 - Initial release of Solana Email Identity Service.
-    - User Registration (PDA-based profiles)
-    - Profile Management (update and unregister)
-    - Email Sending with spam prevention deposit
+  - User Registration (PDA-based profiles)
+  - Profile Management (update and unregister)
+  - Email Sending with spam prevention deposit
 
 ---
 
-*For further details, please refer to the [Developer Guide](./DEVELOPER_GUIDE.md) and  [Security Guide](./SECURITY_GUIDE.md).*
+_For further details, please refer to the [Developer Guide](./DEVELOPER_GUIDE.md) and [Security Guide](./SECURITY_GUIDE.md)._
